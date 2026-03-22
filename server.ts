@@ -18,8 +18,12 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(__dirname, "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
+    // Serve static files from /knowware/
+    app.use("/knowware", express.static(distPath));
+    // Redirect root to /knowware/
+    app.get("/", (req, res) => res.redirect("/knowware/"));
+    // Fallback for SPA routing under /knowware/
+    app.get("/knowware/*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
