@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useIsPresent } from "motion/react";
 import { ExternalLink, Github, ArrowRight, Star, X, ChevronUp, Share2, Twitter, Linkedin, Link, MessageSquare, Phone, Mail, ShieldCheck } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
+
+import { CHAPTERS } from "./chapters";
+import { Chapter } from "./types";
 
 const fadeIn = {
   initial: { opacity: 0, y: 10 },
@@ -21,7 +24,7 @@ const Header = ({ onViewWanted }: { onViewWanted: () => void }) => (
         <div className="font-mono text-[0.58rem] tracking-[0.2em] uppercase text-red-accent mt-px">The A.R.C. Institute</div>
       </div>
       <nav className="flex gap-7 items-center pt-0.5">
-        {["Chapters", "The 81", "Manifesto", "Contact"].map((item) => (
+        {["The Truth", "Chapters", "The 81", "Manifesto", "Contact"].map((item) => (
           item === "The 81" ? (
             <button 
               key={item} 
@@ -127,7 +130,96 @@ const Pillars = () => (
   </section>
 );
 
-const Chapters = () => (
+const TheSimpleTruth = () => (
+  <section id="the-truth" className="px-10 py-20 border-b border-ink bg-paper-mid relative overflow-hidden">
+    {/* Background "Chalkboard" elements */}
+    <div className="absolute top-0 right-0 w-1/3 h-full opacity-[0.03] pointer-events-none select-none font-mono text-[10rem] leading-none text-ink flex flex-col items-end pr-10 pt-10">
+      <div>3⁴</div>
+      <div>9²</div>
+      <div>81</div>
+    </div>
+
+    <div className="max-w-[1100px] mx-auto">
+      <motion.div {...fadeIn} className="section-divider border-ink mb-12">
+        <div>
+          <span className="section-label text-red-accent font-medium">The Core Concept</span>
+          <div className="section-head">THE TRUTH</div>
+        </div>
+        <span className="section-sub">"What is this thing?"</span>
+      </motion.div>
+
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
+        <motion.div {...fadeIn} className="md:col-span-8 space-y-8">
+          <div className="font-serif italic text-[1.4rem] md:text-[1.8rem] text-ink leading-relaxed">
+            "It's actually very simple. We've been thinking about computers as things that follow instructions (software) on top of things that move electrons (hardware). But that's not how the world actually works."
+          </div>
+          
+          <div className="space-y-6 font-sans font-light text-[1rem] text-ink-mid leading-[1.8]">
+            <p>
+              Consider a <strong>murmuration of starlings</strong>. Thousands of birds moving as a single, fluid organism. You don't give them a 'software' manual on how to maintain the shape. And you don't build 'hardware' tracks in the sky for them to follow. They just... <strong>coordinate</strong>.
+            </p>
+            <p>
+              There's a third thing. A pattern. A signal that moves between the birds. That's what we call <strong>Knowware</strong>. It's the intelligence that emerges when things start talking to each other in a way that creates something bigger than the sum of the parts.
+            </p>
+            <p>
+              This book isn't just about AI or robots. It's about the <em>physics of coordination</em>. Why 81 voices? Because 9 squared is a beautiful, complete number in this base-9 universe we've discovered. We're looking for the pattern that connects the body to the mind, and the mind to the cosmos.
+            </p>
+          </div>
+        </motion.div>
+
+        <motion.div {...fadeIn} transition={{ delay: 0.2 }} className="md:col-span-4 space-y-6">
+          <div className="border border-ink p-8 bg-paper relative">
+            <div className="font-mono text-[0.54rem] tracking-[0.22em] uppercase text-red-accent font-medium mb-4">The Institute Note —</div>
+            <p className="font-serif italic text-[1.1rem] text-ink leading-relaxed mb-6">
+              "Coordination is the ghost in the machine that makes the machine more than a machine."
+            </p>
+            <div className="h-px bg-ink/10 w-full mb-6"></div>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink-light">Topic</span>
+                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink">Coordination</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink-light">Base</span>
+                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink">9 (Ternary)</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink-light">Complexity</span>
+                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink">Emergent</span>
+              </div>
+            </div>
+
+            <div className="mt-10 pt-8 border-t border-ink/10">
+              <div className="font-mono text-[0.54rem] tracking-[0.2em] uppercase text-red-accent font-bold mb-4">The Formula</div>
+              <div className="flex items-center justify-between font-mono text-[1.5rem] text-ink">
+                <div className="flex flex-col items-center">
+                  <span className="text-[0.5rem] text-ink-light mb-1 uppercase tracking-widest">Body</span>
+                  H
+                </div>
+                <span className="text-red-accent text-sm">+</span>
+                <div className="flex flex-col items-center">
+                  <span className="text-[0.5rem] text-ink-light mb-1 uppercase tracking-widest">Mind</span>
+                  S
+                </div>
+                <span className="text-red-accent text-sm">→</span>
+                <div className="flex flex-col items-center">
+                  <span className="text-[0.5rem] text-red-accent mb-1 uppercase tracking-widest">Soul</span>
+                  K
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="p-6 border border-ink/10 font-mono text-[0.5rem] tracking-[0.15em] leading-relaxed text-ink-light uppercase">
+            Note: This is not a textbook. It is a cognitive realignment. Proceed with caution.
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  </section>
+);
+
+const Chapters = ({ onSelectChapter }: { onSelectChapter: (ch: Chapter) => void }) => (
   <section id="chapters" className="px-10 py-14 border-b border-ink">
     <div className="max-w-[1100px] mx-auto">
       <motion.div {...fadeIn} className="section-divider border-ink">
@@ -135,26 +227,16 @@ const Chapters = () => (
           <span className="section-label text-red-accent font-medium">The Book</span>
           <div className="section-head">3⁴ Voices. One Pattern.</div>
         </div>
-        <span className="section-sub">10 Chapters</span>
+        <span className="section-sub">9(+1) CHAPTERS</span>
       </motion.div>
-      <div className="grid grid-cols-1 md:grid-cols-2 border border-ink">
-        {[
-          { num: "Ch. 01", title: "The Coordination Intelligence Revolution", sub: "Origin · pattern · emergence" },
-          { num: "Ch. 02", title: "The Dawn of Systems Intelligence", sub: "Quantum · signals · causation" },
-          { num: "Ch. 03", title: "Architecture of Systems Intelligence", sub: "How coordination is built" },
-          { num: "Ch. 04", title: "Systems Intelligence in Action", sub: "Urban · medical · financial" },
-          { num: "Ch. 05", title: "Human–Systems Interaction", sub: "BCI · attention · collective intelligence" },
-          { num: "Ch. 06", title: "Consciousness as Pattern Recognition", sub: "Alignment · justice · material reality" },
-          { num: "Ch. 07", title: "Engineering Reality", sub: "Quantum · robotics · cloud · ML" },
-          { num: "Ch. 08", title: "Beyond Human Intelligence", sub: "AGI · SETI · consciousness · cosmos" },
-          { num: "Ch. 09", title: "No Way Know-How", sub: "Tacit knowledge · commons · labor" },
-          { num: "Ch. 10", title: "The Grand Coordination", sub: "Synthesis and transcendence" }
-        ].map((ch, i) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 border border-ink bg-ink/5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(230,0,0,1)] transition-all duration-500">
+        {CHAPTERS.map((ch, i) => (
           <motion.div 
             key={ch.num} 
             {...fadeIn}
             transition={{ delay: i * 0.05 }}
-            className="p-3.5 px-5 border-b border-r border-ink hover:bg-red-accent hover:text-white transition-colors flex gap-4.5 items-baseline last:border-b-0 md:[&:nth-child(2n)]:border-r-0 md:[&:nth-last-child(-n+2)]:border-b-0 group"
+            onClick={() => onSelectChapter(ch)}
+            className="p-3.5 px-5 border-b border-r border-ink hover:bg-red-accent hover:text-white transition-colors flex gap-4.5 items-baseline last:border-b-0 md:[&:nth-child(2n)]:border-r-0 md:[&:nth-last-child(-n+2)]:border-b-0 group cursor-pointer"
           >
             <div className="font-mono text-[0.54rem] tracking-[0.14em] uppercase text-ink-light group-hover:text-white/70 whitespace-nowrap shrink-0">{ch.num}</div>
             <div>
@@ -168,7 +250,7 @@ const Chapters = () => (
   </section>
 );
 
-const EnneagramDiagram = () => {
+const EnneagramDiagram = ({ onSelectChapter }: { onSelectChapter: (ch: Chapter) => void }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const nodesRef = useRef<(HTMLDivElement | null)[]>([]);
@@ -318,8 +400,12 @@ const EnneagramDiagram = () => {
           onMouseLeave={(e) => {
             gsap.to(e.currentTarget, { scale: 1, duration: 0.3, ease: "power2.out" });
           }}
-          className={`absolute transform -translate-x-1/2 -translate-y-1/2 rounded-full flex flex-col items-center justify-center text-center transition-all duration-300 group cursor-default z-30 ${node.color} ${node.center ? 'w-24 h-24 border-4 border-paper shadow-2xl' : 'w-16 h-16 shadow-xl border border-white/10'}`}
+          className={`absolute transform -translate-x-1/2 -translate-y-1/2 rounded-full flex flex-col items-center justify-center text-center transition-all duration-300 group cursor-pointer z-30 ${node.color} ${node.center ? 'w-24 h-24 border-4 border-paper shadow-2xl' : 'w-16 h-16 shadow-xl border border-white/10'}`}
           style={{ left: `${node.x}%`, top: `${node.y}%` }}
+          onClick={() => {
+            const chapter = CHAPTERS.find(c => parseInt(c.num.split(' ')[1]) === node.id);
+            if (chapter) onSelectChapter(chapter);
+          }}
         >
           <div className="text-white font-mono text-[0.65rem] font-bold leading-none mb-0.5">Ch {node.id}</div>
           <div className="text-white/90 font-sans text-[0.5rem] leading-tight px-1 font-medium">{node.label}</div>
@@ -335,7 +421,7 @@ const EnneagramDiagram = () => {
 };
 
 
-const SacredGeometry = () => {
+const SacredGeometry = ({ onSelectChapter }: { onSelectChapter: (ch: Chapter) => void }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -415,7 +501,7 @@ const SacredGeometry = () => {
                   Now let us render this visually so you can see the sacred geometry in motion. The Enneagram structure is the hidden architecture of the entire Knowware project.
                 </p>
 
-                <EnneagramDiagram />
+                <EnneagramDiagram onSelectChapter={onSelectChapter} />
 
                 <p>
                   <strong>81 = 9²</strong> — not an accident, not a round number. It is the complete manifestation of base-9 mathematics: three forces raised to four dimensions, encoding Gurdjieff's Law of Triamazikamno into the very skeleton of the book.
@@ -891,6 +977,141 @@ const PersonDetail = ({ person, onBack }: { person: Person, onBack: () => void }
   );
 };
 
+const ChapterPage = ({ chapter, onBack }: { chapter: Chapter, onBack: () => void }) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const nextChapter = CHAPTERS.find(c => parseInt(c.num.split(' ')[1]) === parseInt(chapter.num.split(' ')[1]) + 1);
+
+  return (
+    <div className="min-h-screen bg-paper selection:bg-red-accent selection:text-white">
+      <header className="border-b border-ink bg-paper sticky top-0 z-50">
+        <div className="max-w-[1200px] mx-auto px-10 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button 
+              onClick={onBack}
+              className="p-2 hover:bg-black/5 rounded-full transition-colors"
+            >
+              <X size={20} className="text-ink" />
+            </button>
+            <div>
+              <div className="font-mono text-[0.78rem] font-medium tracking-[0.18em] uppercase text-ink">{chapter.num}</div>
+              <div className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-red-accent mt-px">{chapter.title}</div>
+            </div>
+          </div>
+          <div className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light hidden md:block">
+            Systems of Intelligence · Vol. I
+          </div>
+        </div>
+      </header>
+
+      <main className="px-10 py-14 md:py-24">
+        <div className="max-w-[900px] mx-auto space-y-20 md:space-y-32">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="space-y-8"
+          >
+            <div className="flex items-center gap-4">
+              <span className="font-mono text-[0.6rem] tracking-[0.3em] uppercase text-red-accent font-bold">Abstract</span>
+              <div className="h-px flex-1 bg-ink/10"></div>
+            </div>
+            <h1 className="font-serif text-[clamp(2.8rem,7vw,5rem)] leading-[0.95] italic text-ink tracking-tight">{chapter.title}</h1>
+            <p className="font-serif italic text-[1.4rem] md:text-[1.8rem] text-ink-mid leading-relaxed max-w-[800px] border-l-4 border-red-accent pl-8 py-2">
+              {chapter.content}
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-ink/10 pt-16">
+            {Object.entries(chapter.triads).map(([type, voices], i) => (
+              <motion.div 
+                key={type}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.15 + 0.4 }}
+                className="space-y-8"
+              >
+                <div className="space-y-2">
+                  <div className="font-mono text-[0.5rem] tracking-[0.25em] uppercase text-red-accent font-bold">
+                    Triad {String(i + 1).padStart(2, '0')}
+                  </div>
+                  <div className="font-mono text-[0.8rem] tracking-[0.1em] uppercase text-ink border-b border-ink/10 pb-2">
+                    {type}
+                  </div>
+                </div>
+                <ul className="space-y-6">
+                  {voices.map((voice, j) => (
+                    <li key={j} className="group cursor-default">
+                      <div className="font-mono text-[0.85rem] font-medium text-ink group-hover:text-red-accent transition-colors">
+                        {voice}
+                      </div>
+                      <div className="font-mono text-[0.45rem] tracking-[0.15em] uppercase text-ink-light mt-1.5 flex items-center gap-2">
+                        <span className="w-1 h-1 bg-red-accent rounded-full"></span>
+                        Voice {i * 3 + j + 1} of 81
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="bg-ink text-white p-12 md:p-20 relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 bg-red-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div className="relative z-10 space-y-10">
+              <div className="font-mono text-[0.6rem] tracking-[0.3em] uppercase text-red-accent font-bold">The Synthesis</div>
+              <div className="font-serif text-[1.6rem] md:text-[2.2rem] italic text-white/90 leading-[1.3]">
+                "The coordination of these nine voices creates a resonance that transcends the individual contributions. In {chapter.num}, we see the pattern of intelligence emerging from the noise of raw data."
+              </div>
+              <div className="flex flex-wrap gap-4 pt-6">
+                <button className="bg-red-accent text-white font-mono text-[0.65rem] tracking-[0.2em] uppercase px-8 py-4 hover:bg-white hover:text-ink transition-all flex items-center gap-3 group">
+                  Read Full Transcript <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+                <button className="border border-white/20 text-white font-mono text-[0.65rem] tracking-[0.2em] uppercase px-8 py-4 hover:border-red-accent hover:text-red-accent transition-all">
+                  View Citations
+                </button>
+              </div>
+            </div>
+          </motion.div>
+
+          <div className="pt-20 border-t border-ink/10 flex flex-col md:flex-row justify-between items-center gap-12">
+            <button 
+              onClick={onBack}
+              className="group flex items-center gap-4 font-mono text-[0.65rem] tracking-[0.25em] uppercase text-ink-light hover:text-red-accent transition-colors"
+            >
+              <ArrowRight size={14} className="rotate-180 group-hover:-translate-x-2 transition-transform" />
+              Return to Chapters
+            </button>
+
+            {nextChapter && (
+              <button 
+                onClick={() => {
+                  window.scrollTo(0, 0);
+                  onBack(); // This is a bit hacky, but since we are using state-based navigation, we need to update the selected chapter
+                  // Wait, I should probably pass a function to ChapterPage to change the chapter directly
+                }}
+                className="group text-right"
+              >
+                <div className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-ink-light mb-2">Next Chapter</div>
+                <div className="flex items-center gap-4 font-mono text-[0.75rem] tracking-[0.1em] uppercase text-ink group-hover:text-red-accent transition-colors">
+                  {nextChapter.num}: {nextChapter.title} <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
+                </div>
+              </button>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
 const GitHubSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -961,8 +1182,36 @@ const GitHubSection = () => {
 };
 
 const Manifesto = ({ onViewFull }: { onViewFull: () => void }) => (
-  <section id="manifesto" className="px-10 py-18 border-b border-ink">
-    <div className="max-w-[1100px] mx-auto">
+  <section id="manifesto" className="px-10 py-18 border-b border-ink relative overflow-hidden">
+    {/* Moving Prison Bars Shadow Effect */}
+    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+      <motion.div 
+        animate={{ 
+          x: ["-20%", "20%"],
+          rotate: [-3, 3]
+        }}
+        transition={{ 
+          duration: 90, 
+          repeat: Infinity, 
+          repeatType: "mirror", 
+          ease: "linear" 
+        }}
+        className="flex justify-around w-[250%] h-[500%] -ml-[75%] -mt-[100%] opacity-[0.25] skew-x-[-15deg]"
+      >
+        {[...Array(36)].map((_, i) => (
+          <div 
+            key={i} 
+            className="w-4 h-full bg-black"
+            style={{ 
+              filter: 'blur(4px)',
+              boxShadow: '4px 0 12px rgba(0,0,0,0.4)'
+            }}
+          />
+        ))}
+      </motion.div>
+    </div>
+
+    <div className="max-w-[1100px] mx-auto relative z-10">
       <motion.span {...fadeIn} className="section-label text-red-accent font-medium">The Manifesto</motion.span>
       <motion.h2 {...fadeIn} className="font-mono text-[clamp(1.8rem,4vw,3rem)] font-medium tracking-[0.06em] uppercase leading-[1.1] text-ink mb-9">
         Binary is <em className="not-italic text-red-accent">Confinary.</em>
@@ -984,7 +1233,8 @@ const Manifesto = ({ onViewFull }: { onViewFull: () => void }) => (
         </div>
       </motion.div>
       <motion.p {...fadeIn} className="font-sans font-light text-[0.88rem] text-ink-mid leading-[1.85] max-w-[580px] mb-6">
-        The universe operates in threes. Every system that confines you to two choices is lying. Every institution that demands you pick a side is extracting. There's always a middle out inside.
+        The universe operates in threes. 600 million years of ternary biology can't be wrong. Every system that confines you to two choices is lying. Every institution that demands you pick a side is extracting. 
+        It's the Binary Trap. It's the need to look beyond "us vs. them" or "true/false" scenarios to acknowledge a wider spectrum of possibilities. There's always a third way, a middle out, inside.
       </motion.p>
       <motion.button 
         {...fadeIn} 
@@ -998,12 +1248,71 @@ const Manifesto = ({ onViewFull }: { onViewFull: () => void }) => (
 );
 
 const ManifestoPage = ({ onBack }: { onBack: () => void }) => {
+  const isPresent = useIsPresent();
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="min-h-screen bg-paper relative overflow-hidden">
+      {/* Moving Prison Bars Shadow Effect */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <motion.div 
+          animate={{ 
+            x: ["-20%", "20%"],
+            rotate: [-3, 3]
+          }}
+          transition={{ 
+            duration: 120, 
+            repeat: Infinity, 
+            repeatType: "mirror", 
+            ease: "linear" 
+          }}
+          className="flex justify-around w-[250vw] h-[250vh] -ml-[75vw] -mt-[75vh] opacity-[0.22] skew-x-[-18deg]"
+        >
+          {[...Array(40)].map((_, i) => (
+            <motion.div 
+              key={i} 
+              initial={{ scaleY: 1 }}
+              animate={!isPresent ? { scaleY: 1.5, opacity: 0, filter: "blur(20px)" } : { scaleY: 1, opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeInOut", delay: i * 0.01 }}
+              className="w-4 h-full bg-black"
+              style={{ 
+                filter: 'blur(6px)',
+                boxShadow: '6px 0 18px rgba(0,0,0,0.4)'
+              }}
+            />
+          ))}
+        </motion.div>
+      </div>
+
+      {/* Surface Shutter Overlay */}
+      <AnimatePresence>
+        {!isPresent && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[600] pointer-events-none flex"
+          >
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                initial={{ scaleY: 0 }}
+                animate={{ scaleY: 1 }}
+                transition={{ 
+                  duration: 0.4, 
+                  ease: [0.16, 1, 0.3, 1],
+                  delay: i * 0.02 
+                }}
+                className="flex-1 bg-ink origin-top"
+              />
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <header className="border-b border-ink bg-paper sticky top-0 z-50">
         <div className="max-w-[1200px] mx-auto px-10 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -1091,8 +1400,9 @@ const Footer = () => (
 );
 
 export default function App() {
-  const [view, setView] = useState<'main' | 'wanted' | 'person' | 'manifesto'>('main');
+  const [view, setView] = useState<'main' | 'wanted' | 'person' | 'manifesto' | 'chapter'>('main');
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+  const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
 
   // Lock body scroll when sub-pages are open
   useEffect(() => {
@@ -1111,18 +1421,31 @@ export default function App() {
     setView('person');
   };
 
+  const handleSelectChapter = (chapter: Chapter) => {
+    setSelectedChapter(chapter);
+    setView('chapter');
+  };
+
   return (
     <div className="min-h-screen relative bg-paper overflow-x-hidden">
       <Header onViewWanted={() => setView('wanted')} />
-      <main>
+      <motion.main
+        animate={{ 
+          scale: view === 'main' ? 1 : 0.98,
+          opacity: view === 'main' ? 1 : 0.5,
+          filter: view === 'main' ? "blur(0px)" : "blur(4px)"
+        }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      >
         <Masthead />
         <Pillars />
-        <Chapters />
-        <SacredGeometry />
+        <TheSimpleTruth />
+        <Chapters onSelectChapter={handleSelectChapter} />
+        <SacredGeometry onSelectChapter={handleSelectChapter} />
         <Wanted onViewAll={() => setView('wanted')} onSelectPerson={handleSelectPerson} />
         <GitHubSection />
         <Manifesto onViewFull={() => setView('manifesto')} />
-      </main>
+      </motion.main>
       <Footer />
 
       <AnimatePresence>
@@ -1158,13 +1481,35 @@ export default function App() {
         {view === 'manifesto' && (
           <motion.div
             key="manifesto"
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ 
+              opacity: 0, 
+              scale: 1.05, 
+              y: -50,
+              filter: "blur(10px)",
+              transition: { duration: 0.7, ease: [0.4, 0, 0.2, 1] }
+            }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-[300] bg-paper overflow-y-auto"
           >
             <ManifestoPage onBack={() => setView('main')} />
+          </motion.div>
+        )}
+
+        {view === 'chapter' && selectedChapter && (
+          <motion.div
+            key="chapter"
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-[400] bg-paper overflow-y-auto"
+          >
+            <ChapterPage 
+              chapter={selectedChapter} 
+              onBack={() => setView('main')} 
+            />
           </motion.div>
         )}
       </AnimatePresence>
