@@ -29,10 +29,20 @@ export default function PersonDossier({
   person,
   onBack,
   fileNumber,
+  onPrev,
+  onNext,
+  prevPerson,
+  nextPerson,
+  onViewRedThread,
 }: {
   person: Person;
   onBack: () => void;
   fileNumber?: number;
+  onPrev?: () => void;
+  onNext?: () => void;
+  prevPerson?: Person;
+  nextPerson?: Person;
+  onViewRedThread?: () => void;
 }) {
   const [tipForm, setTipForm] = useState({ name: "", contact: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
@@ -391,6 +401,28 @@ export default function PersonDossier({
                 </li>
               ))}
             </ul>
+
+            {onViewRedThread && (
+              <div className="mt-10 pt-8 border-t border-ink/10 flex items-center justify-between">
+                <div>
+                  <div className="font-mono text-[0.46rem] tracking-[0.2em] uppercase text-ink-light mb-1">
+                    Cross-reference —
+                  </div>
+                  <div className="font-mono text-[0.72rem] tracking-[0.04em] text-ink">
+                    Who shares {person.name.split(" ").slice(-1)[0]}'s methods?
+                  </div>
+                </div>
+                <button
+                  onClick={onViewRedThread}
+                  className="group flex items-center gap-3 border border-red-accent/40 hover:border-red-accent bg-paper hover:bg-red-accent/5 px-5 py-3 transition-colors"
+                >
+                  <span className="font-mono text-[0.52rem] tracking-[0.18em] uppercase text-red-accent">
+                    Follow the Red Thread
+                  </span>
+                  <ArrowRight size={11} className="text-red-accent group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </div>
+            )}
           </div>
         </section>
       )}
@@ -446,27 +478,78 @@ export default function PersonDossier({
         </section>
       )}
 
-      {/* ====== TIP LINE + RETURN — constrained ====== */}
-      <section className="px-4 sm:px-6 lg:px-10 py-12 sm:py-16">
+      {/* ====== FOOTER: PREV/NEXT + TIP LINE + RETURN ====== */}
+      <section className="px-4 sm:px-6 lg:px-10 py-10 sm:py-14">
         <div className="max-w-[1100px] mx-auto">
+
+          {/* Row 1 — Prev · File stamp · Next */}
+          <div className="grid grid-cols-3 items-center pb-6 border-b border-ink/10 gap-2">
+            <div className="flex items-center justify-start">
+              {onPrev ? (
+                <button
+                  onClick={onPrev}
+                  className="group flex items-center gap-2 font-mono text-[0.55rem] tracking-[0.2em] uppercase text-ink-light hover:text-red-accent transition-colors"
+                >
+                  <ArrowRight size={11} className="rotate-180 shrink-0 group-hover:-translate-x-1 transition-transform" />
+                  <span className="hidden sm:inline truncate">{prevPerson?.name ?? "Previous"}</span>
+                  <span className="sm:hidden">Prev</span>
+                </button>
+              ) : <div />}
+            </div>
+
+            <div className="flex items-center justify-center">
+              <span className="font-mono text-[0.48rem] tracking-[0.22em] uppercase text-ink-light">
+                File K-{String(fileNumber ?? 0).padStart(2, "0")}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-end">
+              {onNext ? (
+                <button
+                  onClick={onNext}
+                  className="group flex items-center gap-2 font-mono text-[0.55rem] tracking-[0.2em] uppercase text-ink-light hover:text-red-accent transition-colors"
+                >
+                  <span className="hidden sm:inline truncate">{nextPerson?.name ?? "Next"}</span>
+                  <span className="sm:hidden">Next</span>
+                  <ArrowRight size={11} className="shrink-0 group-hover:translate-x-1 transition-transform" />
+                </button>
+              ) : <div />}
+            </div>
+          </div>
+
+          {/* Row 2 — Tip Line · Drop a Dime · Return to Directory */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <div className="flex items-center justify-between max-w-[500px]">
-              <div className="flex items-center gap-3">
-                <MessageSquare size={16} className="text-red-accent" />
-                <h3 className="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-ink font-bold">
+            <div className="grid grid-cols-3 items-center pt-6 gap-2">
+              <div className="flex items-center gap-2 justify-start">
+                <MessageSquare size={14} className="text-red-accent shrink-0" />
+                <h3 className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-ink font-bold whitespace-nowrap hidden lg:block">
                   The Tip Line
                 </h3>
               </div>
-              <button
-                onClick={() => setShowTipLine(!showTipLine)}
-                className="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-red-accent border-b border-red-accent/30 pb-px hover:text-ink hover:border-ink transition-all cursor-pointer"
-              >
-                {showTipLine ? "Close Line" : "Drop a Dime"}
-              </button>
+
+              <div className="flex items-center justify-center">
+                <button
+                  onClick={() => setShowTipLine(!showTipLine)}
+                  className="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-red-accent border-b border-red-accent/30 pb-px hover:text-ink hover:border-ink transition-all"
+                >
+                  {showTipLine ? "Close Line" : "Drop a Dime"}
+                </button>
+              </div>
+
+              <div className="flex items-center justify-end">
+                <button
+                  onClick={onBack}
+                  className="group flex items-center gap-2 font-mono text-[0.55rem] tracking-[0.2em] uppercase text-ink-light hover:text-red-accent transition-colors"
+                >
+                  <ArrowRight size={11} className="rotate-180 shrink-0 group-hover:-translate-x-0.5 transition-transform" />
+                  <span className="hidden sm:inline">Return to Directory</span>
+                  <span className="sm:hidden">Directory</span>
+                </button>
+              </div>
             </div>
 
             <AnimatePresence>
@@ -538,22 +621,6 @@ export default function PersonDossier({
             </AnimatePresence>
           </motion.div>
 
-          {/* RETURN */}
-          <div className="pt-10 mt-10 border-t border-ink/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <button
-              onClick={onBack}
-              className="group flex items-center gap-3 font-mono text-[0.6rem] tracking-[0.2em] uppercase text-ink-light hover:text-red-accent transition-colors"
-            >
-              <ArrowRight
-                size={12}
-                className="rotate-180 group-hover:-translate-x-1 transition-transform"
-              />
-              Return to Directory
-            </button>
-            <div className="font-mono text-[0.48rem] tracking-[0.22em] uppercase text-ink-light">
-              End of dossier · File K-{String(fileNumber ?? 0).padStart(2, "0")}
-            </div>
-          </div>
         </div>
       </section>
     </div>

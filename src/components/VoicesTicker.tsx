@@ -3,13 +3,13 @@ import gsap from "gsap";
 import { CHAPTERS } from "../chapters";
 
 // Infinite marquee of all 81 voices + chapter markers.
-// Duplicated track for seamless loop; GSAP drives translateX.
-export default function VoicesTicker() {
+// direction="rtl" (default) scrolls right-to-left; "ltr" scrolls left-to-right.
+export default function VoicesTicker({ direction = "rtl" }: { direction?: "ltr" | "rtl" }) {
   const trackRef = useRef<HTMLDivElement>(null);
 
   const items: { label: string; kind: "chapter" | "voice" }[] = [];
   CHAPTERS.forEach((ch) => {
-    if (ch.num === "Ch. 10") return; // synthesis chapter has no individual voices
+    if (ch.num === "Ch. 10") return;
     items.push({ label: ch.num, kind: "chapter" });
     [...ch.triads.academic, ...ch.triads.practitioner, ...ch.triads.visionary].forEach((voice) => {
       items.push({ label: voice, kind: "voice" });
@@ -19,17 +19,13 @@ export default function VoicesTicker() {
   useEffect(() => {
     if (!trackRef.current) return;
     const track = trackRef.current;
-
-    // Width of a single copy; we duplicate so translating by -width loops seamlessly.
     const singleWidth = track.scrollWidth / 2;
-    const tween = gsap.to(track, {
-      x: -singleWidth,
-      duration: 180,
-      ease: "none",
-      repeat: -1,
-    });
 
-    // Pause on hover
+    const tween =
+      direction === "ltr"
+        ? gsap.fromTo(track, { x: -singleWidth }, { x: 0, duration: 180, ease: "none", repeat: -1 })
+        : gsap.fromTo(track, { x: 0 }, { x: -singleWidth, duration: 180, ease: "none", repeat: -1 });
+
     const onEnter = () => tween.timeScale(0.25);
     const onLeave = () => tween.timeScale(1);
     track.parentElement?.addEventListener("mouseenter", onEnter);
@@ -40,7 +36,7 @@ export default function VoicesTicker() {
       track.parentElement?.removeEventListener("mouseenter", onEnter);
       track.parentElement?.removeEventListener("mouseleave", onLeave);
     };
-  }, []);
+  }, [direction]);
 
   return (
     <div className="relative overflow-hidden border-t border-ink/10 bg-paper">
