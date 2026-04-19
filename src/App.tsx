@@ -2017,10 +2017,25 @@ const WantedPage = ({ onBack, onSelectPerson, onViewModus }: { onBack: () => voi
   );
 };
 
+const PRIME_PAIRS_COUNT = 249; // cross-classifier person-to-person connections
+
 const GitHubSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [typed, setTyped] = useState("");
+  const [ghLive, setGhLive] = useState<{ stars: number; prs: number } | null>(null);
   const description = "The third body between hardware and software. Binary is confinary. There's always a middle out inside.";
+
+  useEffect(() => {
+    Promise.all([
+      fetch("https://api.github.com/repos/iamkhayyam/systemsofintelligence-book").then(r => r.json()),
+      fetch("https://api.github.com/repos/iamkhayyam/systemsofintelligence-book/pulls?state=open&per_page=100").then(r => r.json()),
+    ]).then(([repo, pulls]) => {
+      setGhLive({
+        stars: typeof repo.stargazers_count === "number" ? repo.stargazers_count : 0,
+        prs: Array.isArray(pulls) ? pulls.length : 0,
+      });
+    }).catch(() => {/* fail silently — defaults shown */});
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -2110,19 +2125,19 @@ const GitHubSection = () => {
 
           <div className="grid grid-cols-3 gap-6 mt-7 pt-6 border-t border-white/10">
             {[
-              { val: 57, label: "Commits", color: "text-red-accent", isNum: true },
-              { val: "3⁴", label: "Interviews", sub: "81", color: "text-white" },
-              { val: 0, label: "Stars", color: "text-white", isNum: true },
-              { val: 0, label: "Forks", color: "text-white", isNum: true },
-              { val: "3⁴", label: "Voices", sub: "81", color: "text-white" },
-              { val: "Active", label: "Status", color: "text-green-accent" },
+              { val: ghLive?.stars ?? 0,  label: "Stars",       color: "text-red-accent", isNum: true },
+              { val: PRIME_PAIRS_COUNT,   label: "Prime Pairs", color: "text-red-accent", isNum: true },
+              { val: "3⁴",               label: "Voices",      sub: "81", color: "text-white" },
+              { val: 57,                  label: "Commits",     color: "text-white", isNum: true },
+              { val: ghLive?.prs ?? 0,   label: "Open PRs",    sub: "turn yourself in", color: "text-white", isNum: true },
+              { val: "Active",            label: "Status",      color: "text-green-accent" },
             ].map((s, i) => (
               <div key={i} className="flex flex-col github-stat">
                 <div className={`font-mono text-[1.2rem] font-medium leading-none tracking-tight tabular-nums ${s.color || "text-white"}`}>
                   {s.isNum ? <Counter to={s.val as number} duration={1.4} /> : s.val}
                 </div>
                 <div className="font-mono text-[0.48rem] tracking-[0.18em] uppercase text-white/40 mt-2 flex items-center gap-1">
-                  {s.label} {s.sub && <span className="text-[0.35rem] opacity-50">({s.sub})</span>}
+                  {s.label} {s.sub && <span className="text-[0.35rem] opacity-50 normal-case">({s.sub})</span>}
                 </div>
               </div>
             ))}
