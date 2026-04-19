@@ -2358,15 +2358,76 @@ const Footer = () => (
 
 type View = 'main' | 'wanted' | 'person' | 'manifesto' | 'chapter' | 'modus';
 
+// ── Hash routing utilities ────────────────────────────────────────────────────
+
+function nameToSlug(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-$/g, '');
+}
+
+function chapterNum(chNum: string): string {
+  const m = chNum.match(/\d+/);
+  return m ? String(parseInt(m[0], 10)) : '1';
+}
+
+function parseHash(): { view: View; person?: Person; chapter?: Chapter; modusFocus?: Person } {
+  const hash = window.location.hash.replace(/^#\/?/, '');
+  const parts = hash.split('/').filter(Boolean);
+  if (!parts.length) return { view: 'main' };
+  switch (parts[0]) {
+    case 'wanted':   return { view: 'wanted' };
+    case 'manifesto': return { view: 'manifesto' };
+    case 'modus': {
+      if (parts[1]) {
+        const p = WANTED_LIST.find(p => nameToSlug(p.name) === parts[1]);
+        return { view: 'modus', modusFocus: p };
+      }
+      return { view: 'modus' };
+    }
+    case 'person': {
+      if (parts[1]) {
+        const p = WANTED_LIST.find(p => nameToSlug(p.name) === parts[1]);
+        if (p) return { view: 'person', person: p };
+      }
+      return { view: 'main' };
+    }
+    case 'chapter': {
+      if (parts[1]) {
+        const n = parseInt(parts[1], 10);
+        const ch = CHAPTERS.find(c => {
+          const m = c.num.match(/\d+/);
+          return m && parseInt(m[0], 10) === n;
+        });
+        if (ch) return { view: 'chapter', chapter: ch };
+      }
+      return { view: 'main' };
+    }
+    default: return { view: 'main' };
+  }
+}
+
+function hashForState(view: View, person: Person | null, chapter: Chapter | null, modusFocus: Person | null): string {
+  switch (view) {
+    case 'wanted':   return '#/wanted';
+    case 'manifesto': return '#/manifesto';
+    case 'modus':    return modusFocus ? `#/modus/${nameToSlug(modusFocus.name)}` : '#/modus';
+    case 'person':   return person  ? `#/person/${nameToSlug(person.name)}` : '';
+    case 'chapter':  return chapter ? `#/chapter/${chapterNum(chapter.num)}` : '';
+    default:         return '';
+  }
+}
 
 export default function App() {
-  const [view, setView] = useState<View>('main');
-  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
-  const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
-  const [overlayPhase, setOverlayPhase] = useState<OverlayPhase>('idle');
-  const [modusFocusPerson, setModusFocusPerson] = useState<Person | null>(null);
-  const previousViewRef = useRef<View>('main');
-  const pendingNav = useRef<(() => void) | null>(null);
+  // Initialize state from URL so deep links work on first load
+  const initialHash                  = parseHash();
+  const [view, setView]              = useState<View>(initialHash.view);
+  const [selectedPerson, setSelectedPerson]       = useState<Person | null>(initialHash.person ?? null);
+  const [selectedChapter, setSelectedChapter]     = useState<Chapter | null>(initialHash.chapter ?? null);
+  const [overlayPhase, setOverlayPhase]           = useState<OverlayPhase>('idle');
+  const [modusFocusPerson, setModusFocusPerson]   = useState<Person | null>(initialHash.modusFocus ?? null);
+  const previousViewRef  = useRef<View>('main');
+  const pendingNav       = useRef<(() => void) | null>(null);
+  const lastHashRef      = useRef<string>(window.location.hash);
+  const isFirstRenderRef = useRef(true);
 
   const changeView = (next: View, payload?: { person?: Person; chapter?: Chapter }) => {
     // Same view + same content: no-op
@@ -2433,6 +2494,38 @@ export default function App() {
       observer.disconnect();
       cleanup();
     };
+  }, []);
+
+  // State → URL: push a history entry whenever the active view/content changes
+  useEffect(() => {
+    const hash = hashForState(view, selectedPerson, selectedChapter, modusFocusPerson);
+    if (isFirstRenderRef.current) {
+      isFirstRenderRef.current = false;
+      lastHashRef.current = hash;
+      // Normalize the URL on first load (e.g. fix casing, canonical form)
+      if (window.location.hash !== hash) {
+        window.history.replaceState(null, '', hash || window.location.pathname);
+      }
+      return;
+    }
+    if (hash !== lastHashRef.current) {
+      lastHashRef.current = hash;
+      window.history.pushState(null, '', hash || window.location.pathname);
+    }
+  }, [view, selectedPerson, selectedChapter, modusFocusPerson]);
+
+  // URL → state: restore view when the user navigates with browser back/forward
+  useEffect(() => {
+    const onPop = () => {
+      const state = parseHash();
+      setView(state.view);
+      setSelectedPerson(state.person ?? null);
+      setSelectedChapter(state.chapter ?? null);
+      setModusFocusPerson(state.modusFocus ?? null);
+      window.scrollTo(0, 0);
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
   }, []);
 
 
