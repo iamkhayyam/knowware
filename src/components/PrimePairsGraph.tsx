@@ -120,6 +120,11 @@ export default function PrimePairsGraph({
     });
 
     // ── Cytoscape init ────────────────────────────────────────────────────────
+    // Seed random initial positions so cose doesn't start from a degenerate
+    // all-at-origin state (which causes NaN forces and explosive scatter).
+    const W0 = containerRef.current.offsetWidth  || 800;
+    const H0 = containerRef.current.offsetHeight || 600;
+
     const cy = cytoscape({
       container: containerRef.current,
       elements: {
@@ -128,6 +133,10 @@ export default function PrimePairsGraph({
             id: p.name,
             label: p.name.split(" ").slice(-1)[0],
             degree: degree.get(p.name) ?? 1,
+          },
+          position: {
+            x: W0 * 0.1 + Math.random() * W0 * 0.8,
+            y: H0 * 0.1 + Math.random() * H0 * 0.8,
           },
         })),
         edges: primePairs.map(({ a, b, classifiers }) => ({
@@ -285,6 +294,11 @@ export default function PrimePairsGraph({
     };
 
     cy.on("layoutstop", () => {
+      // Always re-measure the container — dimensions may not have settled when
+      // the layout ran, so fit: true in the cose options may have used wrong bounds.
+      cy.resize();
+      cy.fit(undefined, 60);
+
       setReady(true);
       rafRef.current = requestAnimationFrame(runPhysics);
 
@@ -300,11 +314,7 @@ export default function PrimePairsGraph({
           edges.addClass("active");
           nbrs.addClass("neighbor");
 
-          // Force Cytoscape to re-measure the container (dimensions may have settled
-          // after React's render), fit everything into view, then shift the viewport
-          // left so the graph lives in the visible area (sidebar takes the right side).
-          cy.resize();
-          cy.fit(undefined, 60);
+          // Shift viewport left so graph is in the non-sidebar area
           cy.panBy({ x: -SIDEBAR_W / 2, y: 0 });
 
           sidebarOpenRef.current = true;
@@ -394,6 +404,10 @@ export default function PrimePairsGraph({
     });
 
     cyRef.current = cy;
+
+    // Force Cytoscape to re-read container dimensions before the layout runs.
+    // The container may have reported 0×0 during construction if CSS hadn't settled.
+    cy.resize();
 
     // Run layout NOW — after handlers are registered so layoutstop is caught
     cy.layout({
