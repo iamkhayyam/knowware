@@ -1,114 +1,117 @@
 import { Chapter } from "./types";
 
+// Voices mirror /chapters/chNN/interviews/ in the book repo.
+// Each chapter has 9 voices, split across Academic / Practitioner / Visionary triads.
+
 export const CHAPTERS: Chapter[] = [
-  { 
-    num: "Ch. 01", 
-    title: "The Coordination Intelligence Revolution", 
-    sub: "Origin · pattern · emergence",
-    content: "The first chapter explores the fundamental shift from individual intelligence to coordination intelligence. We examine the origins of the A.R.C. Institute and the emergence of the base-9 pattern as a universal language for complex systems.",
+  {
+    num: "Ch. 01",
+    title: "The Coordination Intelligence Revolution",
+    sub: "How ternary thinking unlocks human–AI partnership",
+    content: "June 2014. Facebook's emotional contagion experiment — 689,003 users whose News Feeds were secretly manipulated — accidentally revealed that intelligence doesn't live in humans or machines. It emerges in the coordination between them. The opening chapter lays the move from binary optimization to ternary coordination.",
     triads: {
-      academic: ["Dr. Melanie Mitchell", "Dr. Scott Page", "Dr. Steven Strogatz"],
-      practitioner: ["Vitalik Buterin", "Audrey Tang", "Glen Weyl"],
-      visionary: ["Kevin Kelly", "Balaji Srinivasan", "Naval Ravikant"]
+      academic: ["Dr. Paul Pangaro", "Dr. N. Katherine Hayles", "Donella Meadows"],
+      practitioner: ["Stewart Brand", "Kevin Kelly", "Yann Minh"],
+      visionary: ["Terence McKenna", "Phillip Deere (Lakota Elder)", "Daniel Schmachtenberger"]
     }
   },
-  { 
-    num: "Ch. 02", 
-    title: "The Dawn of Systems Intelligence", 
-    sub: "Quantum · signals · causation",
-    content: "Systems intelligence begins with the recognition of signals within noise. This chapter delves into the quantum foundations of information and the causal structures that define our reality.",
+  {
+    num: "Ch. 02",
+    title: "The Dawn of Systems Intelligence",
+    sub: "Recognizing the third body",
+    content: "Netflix didn't win on content or algorithms. It won by coordinating user behavior, content ecosystem, and algorithm optimization simultaneously. Chapter 2 traces the same pattern from Shannon's information theory through Hartmut Neven's quantum AI lab — binary logic was always an approximation. Reality coordinates.",
     triads: {
-      academic: ["Dr. Judea Pearl", "Dr. David Deutsch", "Dr. Carlo Rovelli"],
-      practitioner: ["Demis Hassabis", "Ilya Sutskever", "Sam Altman"],
-      visionary: ["Joscha Bach", "Lex Fridman", "Stephen Wolfram"]
+      academic: ["Dr. Judea Pearl", "Claude Shannon", "Alan Turing"],
+      practitioner: ["Dr. Hartmut Neven", "Former NSA Technical Director (Anonymous)", "Palmer Luckey"],
+      visionary: ["Mo Gawdat", "Hunbatz Men", "Ruqian Lu"]
     }
   },
-  { 
-    num: "Ch. 03", 
-    title: "Architecture of Systems Intelligence", 
-    sub: "How coordination is built",
-    content: "How do we build systems that coordinate themselves? We look at the architectural blueprints of distributed intelligence, from blockchain protocols to biological swarms.",
+  {
+    num: "Ch. 03",
+    title: "Architecture of Systems Intelligence",
+    sub: "Three-body architecture patterns",
+    content: "A building in Barcelona learns. Sensors, AI, and human occupants coordinate in real-time to produce intelligence none of the three could generate alone. Feynman's path integrals reveal that nature doesn't optimize; it coordinates across every possible path. Capra's autopoiesis completes the triad — the architecture of intelligence is the architecture of life.",
     triads: {
-      academic: ["Dr. Barbara Tversky", "Dr. Michael Levin", "Dr. Karl Friston"],
-      practitioner: ["Dario Amodei", "Jack Clark", "Daniela Amodei"],
-      visionary: ["Marc Andreessen", "Peter Thiel", "Ray Kurzweil"]
+      academic: ["Yann LeCun", "Richard Feynman", "James Gosling"],
+      practitioner: ["Dario Amodei", "Demis Hassabis", "Clément Delangue"],
+      visionary: ["Iain McGilchrist", "Fritjof Capra", "Ray Kurzweil"]
     }
   },
-  { 
-    num: "Ch. 04", 
-    title: "Systems Intelligence in Action", 
-    sub: "Urban · medical · financial",
-    content: "Theory meets practice. We analyze real-world deployments of coordination intelligence in urban planning, personalized medicine, and global financial systems.",
+  {
+    num: "Ch. 04",
+    title: "Systems Intelligence in Action",
+    sub: "Ternary coordination case studies",
+    content: "Bogotá, 1998. A dying city — homicides at 80 per 100,000, two-hour commutes. Mayor Peñalosa didn't build infrastructure. He coordinated infrastructure with citizen behavior with political vision, and the city healed. Chapter 4 tests whether three-body coordination survives contact with reality: cities, markets, medicine, antifragility.",
     triads: {
-      academic: ["Dr. Geoffrey West", "Dr. Nicholas Christakis", "Dr. Esther Duflo"],
-      practitioner: ["Brian Chesky", "Patrick Collison", "John Collison"],
-      visionary: ["Stewart Brand", "Jane Jacobs (Legacy)", "Buckminster Fuller (Legacy)"]
+      academic: ["Carlo Ratti", "Eric Topol", "Andrew Lo"],
+      practitioner: ["Dan Doctoroff", "Linda Raschke", "Quant/HFT Savant (Anonymous)"],
+      visionary: ["Sarah Rossbach", "Caroline Myss", "Nassim Taleb"]
     }
   },
-  { 
-    num: "Ch. 05", 
-    title: "Human–Systems Interaction", 
-    sub: "BCI · attention · collective intelligence",
-    content: "The interface between human consciousness and machine intelligence. This chapter covers Brain-Computer Interfaces, the attention economy, and the scaling of collective intelligence.",
+  {
+    num: "Ch. 05",
+    title: "Human–Systems Intelligence Interaction",
+    sub: "Ternary human–AI collaboration patterns",
+    content: "Ian Burkhart, paralyzed, plays Guitar Hero with his thoughts — brain signals coordinated through a neural interface with muscle stimulation. The boundary between human and machine is already dissolving. The question isn't whether to cross it, but how to coordinate the crossing.",
     triads: {
-      academic: ["Dr. Mary Lou Jepsen", "Dr. Edward Boyden", "Dr. Miguel Nicolelis"],
-      practitioner: ["Tristan Harris", "Aza Raskin", "Elon Musk"],
-      visionary: ["Jaron Lanier", "Douglas Engelbart (Legacy)", "Marshall McLuhan (Legacy)"]
+      academic: ["Dr. Miguel Nicolelis", "Dr. Alex Pentland", "Dr. Shannon Vallor"],
+      practitioner: ["Dr. Thomas Oxley", "Tristan Harris", "Jimmy Wales"],
+      visionary: ["BCI User (Anonymous)", "Thich Nhat Hanh Foundation", "Donna Haraway"]
     }
   },
-  { 
-    num: "Ch. 06", 
-    title: "Consciousness as Pattern Recognition", 
-    sub: "Alignment · justice · material reality",
-    content: "Is consciousness simply the ultimate pattern recognition engine? We explore the ethical implications of AI alignment, social justice in the age of algorithms, and the nature of material reality.",
+  {
+    num: "Ch. 06",
+    title: "Consciousness as Pattern Recognition",
+    sub: "Perception · processing · awareness",
+    content: "October 2018, Tempe. A self-driving Uber detects Elaine Herzberg 5.6 seconds before impact and classifies her as 'unknown object,' then 'vehicle,' then 'bicycle.' It never classifies her as 'pedestrian.' The car had perception and processing but lacked the third body: awareness. Wiener warned of this for sixteen years.",
     triads: {
-      academic: ["Dr. Timnit Gebru", "Dr. Joy Buolamwini", "Dr. Ruha Benjamin"],
-      practitioner: ["Rumman Chowdhury", "Margaret Mitchell", "Abeba Birhane"],
-      visionary: ["Donna Haraway", "N. Katherine Hayles", "Octavia Butler (Legacy)"]
+      academic: ["Stuart Russell", "Dr. Timnit Gebru", "Kate Crawford"],
+      practitioner: ["Norbert Wiener", "Margaret Mitchell", "In-Q-Tel Operator (Anonymous)"],
+      visionary: ["Sir Roger Penrose", "Antonio Damasio", "Rupert Sheldrake"]
     }
   },
-  { 
-    num: "Ch. 07", 
-    title: "Engineering Reality", 
-    sub: "Quantum · robotics · cloud · ML",
-    content: "The tools we use to shape the world. From quantum computing to advanced robotics, we look at the engineering challenges of the next century.",
+  {
+    num: "Ch. 07",
+    title: "Engineering Reality",
+    sub: "Pattern development and quantum systems",
+    content: "Autodesk's generative AI designs an Airbus partition 45% lighter than the human version — alien curves no engineer would imagine, yet structurally superior. Three-body coordination doesn't just improve engineering. It transcends the design space itself, producing solutions outside the boundaries of human imagination.",
     triads: {
-      academic: ["Dr. Fei-Fei Li", "Dr. Yann LeCun", "Dr. Yoshua Bengio"],
-      practitioner: ["Jeff Dean", "Andrej Karpathy", "Greg Brockman"],
-      visionary: ["George Church", "Jennifer Doudna", "Feng Zhang"]
+      academic: ["Dr. John Preskill", "Seth Lloyd", "Chip Huyen"],
+      practitioner: ["Jeff Dean", "Dr. Lisa Su", "Wendell Weeks"],
+      visionary: ["Neri Oxman", "DARPA Operator (Anonymous)", "Dr. Fei-Fei Li"]
     }
   },
-  { 
-    num: "Ch. 08", 
-    title: "Beyond Human Intelligence", 
-    sub: "AGI · SETI · consciousness · cosmos",
-    content: "What lies beyond the human horizon? We contemplate Artificial General Intelligence, the search for extraterrestrial intelligence, and the cosmic future of consciousness.",
+  {
+    num: "Ch. 08",
+    title: "Beyond Human Intelligence",
+    sub: "Cosmic three-body dynamics",
+    content: "Apollo navigated 240,000 miles to a moving target with 4KB of RAM — less than a modern digital watch — by coordinating human judgment with computer calculation with physical reality. Ramanujan's mathematical intuition arrived from a source he could not explain. What does intelligence look like at cosmic scale?",
     triads: {
-      academic: ["Dr. Nick Bostrom", "Dr. Max Tegmark", "Dr. Martin Rees"],
-      practitioner: ["Shane Legg", "Mustafa Suleyman", "Emad Mostaque"],
-      visionary: ["Jill Tarter", "Seth Shostak", "Avi Loeb"]
+      academic: ["Dr. Max Tegmark", "Dr. Nick Bostrom", "Dr. Jill Tarter"],
+      practitioner: ["Dr. Sara Seager", "Dr. David Chalmers", "Anil Seth"],
+      visionary: ["Liu Cixin", "Dr. Thomas Nagel", "Srinivasa Ramanujan"]
     }
   },
-  { 
-    num: "Ch. 09", 
-    title: "No Way Know-How", 
-    sub: "Tacit knowledge · commons · labor",
-    content: "The value of what cannot be automated. We examine tacit knowledge, the digital commons, and the future of human labor in a world of systems intelligence.",
+  {
+    num: "Ch. 09",
+    title: "No Way? Know-How.",
+    sub: "Challenges, barriers, and conscious participation",
+    content: "A Stanford AI diagnoses pneumonia at 95% accuracy — better than most radiologists — and gets shut down in six months. Not because it didn't work, but because nobody coordinated the technology with workflow, operations, liability, or trust. Chapter 9 is a sustained confrontation with the barriers that collapse the entire project.",
     triads: {
-      academic: ["Dr. Elinor Ostrom (Legacy)", "Dr. Mariana Mazzucato", "Dr. Shoshana Zuboff"],
-      practitioner: ["Jimmy Wales", "Tim Berners-Lee", "Richard Stallman"],
-      visionary: ["David Graeber (Legacy)", "Rebecca Solnit", "Cory Doctorow"]
+      academic: ["David Autor", "Kate Raworth", "François Chollet"],
+      practitioner: ["Emad Mostaque", "Dr. Fiona Hill", "Peter Senge"],
+      visionary: ["Charles Eisenstein", "Sherry Turkle", "MK-Ultra Operator (Anonymous)"]
     }
   },
-  { 
-    num: "Ch. 10", 
-    title: "The Grand Coordination", 
-    sub: "Synthesis and transcendence",
-    content: "The final synthesis. We bring together all the threads of the previous chapters to envision a future of global coordination and transcendence.",
+  {
+    num: "Ch. 10",
+    title: "The Grand Coordination",
+    sub: "Closing the feedback loop · ChX",
+    content: "Nine chapters. Eighty-one voices. Systems thinkers and quantum physicists, neuroscientists and urban planners, mystics and engineers — all circling the same insight from different altitudes. The capstone doesn't summarize. It coordinates. The pattern clicks, and you realize it was never hiding; it was waiting for you to develop the eyes.",
     triads: {
-      academic: ["Dr. Ken Wilber", "Dr. Don Beck (Legacy)", "Dr. Clare Graves (Legacy)"],
-      practitioner: ["The Dalai Lama", "Pope Francis", "Thich Nhat Hanh (Legacy)"],
-      visionary: ["Pierre Teilhard de Chardin (Legacy)", "Sri Aurobindo (Legacy)", "The Mother (Legacy)"]
+      academic: ["Foundation triad (Ch. 1–3)", "Pangaro · Shannon · Feynman", "Physics of coordination"],
+      practitioner: ["Application triad (Ch. 4–6)", "Peñalosa · Burkhart · Wiener", "Coordination in the world"],
+      visionary: ["Transcendence triad (Ch. 7–9)", "Oxman · Ramanujan · Senge", "Coordination at highest stakes"]
     }
   }
 ];

@@ -21,7 +21,7 @@ const Header = ({ onViewWanted }: { onViewWanted: () => void }) => (
     <div className="max-w-[1200px] mx-auto px-10 py-2.5 flex items-start justify-between">
       <div className="header-wordmark">
         <div className="font-mono text-[0.78rem] font-medium tracking-[0.18em] uppercase text-ink">Knowware</div>
-        <div className="font-mono text-[0.58rem] tracking-[0.2em] uppercase text-red-accent mt-px">The A.R.C. Institute</div>
+        <div className="font-mono text-[0.58rem] tracking-[0.2em] uppercase text-red-accent mt-px">By Khayyam Wakil</div>
       </div>
       <nav className="flex gap-7 items-center pt-0.5">
         {["The Truth", "Chapters", "The 81", "Manifesto", "Contact"].map((item) => (
@@ -44,7 +44,7 @@ const Header = ({ onViewWanted }: { onViewWanted: () => void }) => (
           )
         ))}
         <a 
-          href="https://github.com/knowwareinstitute/systemsofintelligence" 
+          href="https://github.com/iamkhayyam/systemsofintelligence-book"
           target="_blank" 
           rel="noopener noreferrer"
           className="font-mono text-[0.63rem] tracking-[0.14em] uppercase text-ink hover:text-red-accent transition-colors flex items-center gap-1.5 border border-ink/20 px-3 py-1 rounded-sm"
@@ -54,9 +54,9 @@ const Header = ({ onViewWanted }: { onViewWanted: () => void }) => (
       </nav>
     </div>
     <div className="border-t border-ink/10 px-10 py-1.5 flex items-center justify-between">
-      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light">Knowware Preprints</span>
-      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light">In Progress · March 2026</span>
-      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-red-accent font-medium">Registered · Canada</span>
+      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light">Systems of Intelligence · Vol. I</span>
+      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light">Draft · April 2026</span>
+      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-red-accent font-medium">81 Voices · 9(+1) Chapters</span>
     </div>
   </header>
 );
@@ -94,7 +94,7 @@ const Masthead = () => {
             "Binary is confinary. There's always a middle out inside."
           </div>
           <div className="flex gap-3">
-            <a href="https://github.com/knowwareinstitute/systemsofintelligence" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-mono text-[0.6rem] tracking-[0.2em] uppercase bg-ink text-paper px-6 py-3.5 hover:bg-red-accent transition-colors">
+            <a href="https://github.com/iamkhayyam/systemsofintelligence-book" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-mono text-[0.6rem] tracking-[0.2em] uppercase bg-ink text-paper px-6 py-3.5 hover:bg-red-accent transition-colors">
               <Star size={12} className="fill-current" /> Star on GitHub
             </a>
             <a href="#github" className="flex items-center gap-2 font-mono text-[0.6rem] tracking-[0.2em] uppercase border border-ink text-ink px-6 py-3.5 hover:border-red-accent hover:text-red-accent transition-colors">
@@ -169,7 +169,7 @@ const TheSimpleTruth = () => (
 
         <motion.div {...fadeIn} transition={{ delay: 0.2 }} className="md:col-span-4 space-y-6">
           <div className="border border-ink p-8 bg-paper relative">
-            <div className="font-mono text-[0.54rem] tracking-[0.22em] uppercase text-red-accent font-medium mb-4">The Institute Note —</div>
+            <div className="font-mono text-[0.54rem] tracking-[0.22em] uppercase text-red-accent font-medium mb-4">Author's Note —</div>
             <p className="font-serif italic text-[1.1rem] text-ink leading-relaxed mb-6">
               "Coordination is the ghost in the machine that makes the machine more than a machine."
             </p>
@@ -574,11 +574,22 @@ interface Person {
 }
 
 const WANTED_LIST: Person[] = [
-  { 
-    name: "Dr. Judea Pearl", 
-    alias: "The Causation Architect", 
-    badges: ["Ch. 02", "Causation"],
-    bio: "The pioneer of Bayesian networks and the probabilistic approach to artificial intelligence. His work on causal inference has revolutionized how we understand the 'Why' behind the data.",
+  // Ch. 01 — The Coordination Intelligence Revolution
+  { name: "Dr. Paul Pangaro", alias: "The Conversation Theorist", badges: ["Ch. 01", "Academic"] },
+  { name: "Dr. N. Katherine Hayles", alias: "The Posthuman Reader", badges: ["Ch. 01", "Academic"] },
+  { name: "Donella Meadows", alias: "The Leverage Point", badges: ["Ch. 01", "Academic"] },
+  { name: "Stewart Brand", alias: "The Whole Earth Signal", badges: ["Ch. 01", "Practitioner"] },
+  { name: "Kevin Kelly", alias: "The Technium Scribe", badges: ["Ch. 01", "Practitioner"] },
+  { name: "Yann Minh", alias: "The Noonaut", badges: ["Ch. 01", "Practitioner"] },
+  { name: "Terence McKenna", alias: "The Stoned Ape", badges: ["Ch. 01", "Visionary"] },
+  { name: "Phillip Deere", alias: "Lakota Elder · Keeper of Relations", badges: ["Ch. 01", "Visionary"] },
+  { name: "Daniel Schmachtenberger", alias: "The Generator Function", badges: ["Ch. 01", "Visionary"] },
+  // Ch. 02 — The Dawn of Systems Intelligence
+  {
+    name: "Dr. Judea Pearl",
+    alias: "The Causation Architect",
+    badges: ["Ch. 02", "Academic"],
+    bio: "Pioneer of Bayesian networks and the probabilistic approach to AI. His work on causal inference — the ladder of causation — reframed how we understand the 'Why' behind the data.",
     contributions: [
       "The Book of Why",
       "Probabilistic Reasoning in Intelligent Systems",
@@ -586,18 +597,84 @@ const WANTED_LIST: Person[] = [
     ],
     quote: "You cannot answer a question that you cannot ask, and you cannot ask a question that you have no words for."
   },
-  { name: "Dr. Melanie Mitchell", alias: "The Complexity Scientist", badges: ["Ch. 01–02", "Complexity"] },
-  { name: "Dario Amodei", alias: "The Constitutional Architect", badges: ["Ch. 03", "Alignment"] },
-  { name: "Tristan Harris", alias: "The Attention Defender", badges: ["Ch. 05", "Attention"] },
-  ...Array.from({ length: 77 }, (_, i) => {
-    const id = i + 5;
-    const aliases = ["The Ghost in the Shell", "The Neural Phantom", "The Latent Vector", "The Recursive Loop", "The Entropy King", "The Signal Noise"];
-    return {
-      name: `Entity ${String(id).padStart(2, '0')}`,
-      alias: aliases[id % aliases.length],
-      badges: [`Ch. ${String(Math.floor(id / 10) + 1).padStart(2, '0')}`, "Unclaimed"]
-    };
-  })
+  { name: "Claude Shannon", alias: "The Information Theorist", badges: ["Ch. 02", "Academic"] },
+  { name: "Alan Turing", alias: "The Imitation Game", badges: ["Ch. 02", "Academic"] },
+  { name: "Dr. Hartmut Neven", alias: "The Quantum AI Lab", badges: ["Ch. 02", "Practitioner"] },
+  { name: "Former NSA Technical Director", alias: "Anonymous — The Signals Intercept", badges: ["Ch. 02", "Practitioner"] },
+  { name: "Palmer Luckey", alias: "The Defense Primitive", badges: ["Ch. 02", "Practitioner"] },
+  { name: "Mo Gawdat", alias: "The Solve for Happy", badges: ["Ch. 02", "Visionary"] },
+  { name: "Hunbatz Men", alias: "Maya Daykeeper", badges: ["Ch. 02", "Visionary"] },
+  { name: "Ruqian Lu", alias: "The Knowware Principle", badges: ["Ch. 02", "Visionary"] },
+  // Ch. 03 — Architecture of Systems Intelligence
+  { name: "Yann LeCun", alias: "The Convolutional Prophet", badges: ["Ch. 03", "Academic"] },
+  { name: "Richard Feynman", alias: "The Path Integral", badges: ["Ch. 03", "Academic"] },
+  { name: "James Gosling", alias: "The Java Father", badges: ["Ch. 03", "Academic"] },
+  { name: "Dario Amodei", alias: "The Constitutional Architect", badges: ["Ch. 03", "Practitioner"] },
+  { name: "Demis Hassabis", alias: "The AlphaFold Engine", badges: ["Ch. 03", "Practitioner"] },
+  { name: "Clément Delangue", alias: "The Open Model Curator", badges: ["Ch. 03", "Practitioner"] },
+  { name: "Iain McGilchrist", alias: "The Divided Brain", badges: ["Ch. 03", "Visionary"] },
+  { name: "Fritjof Capra", alias: "The Web of Life", badges: ["Ch. 03", "Visionary"] },
+  { name: "Ray Kurzweil", alias: "The Singularity Runner", badges: ["Ch. 03", "Visionary"] },
+  // Ch. 04 — Systems Intelligence in Action
+  { name: "Carlo Ratti", alias: "The Sensible City", badges: ["Ch. 04", "Academic"] },
+  { name: "Dr. Eric Topol", alias: "The Deep Medicine", badges: ["Ch. 04", "Academic"] },
+  { name: "Andrew Lo", alias: "The Adaptive Markets", badges: ["Ch. 04", "Academic"] },
+  { name: "Dan Doctoroff", alias: "The Sidewalk Mayor", badges: ["Ch. 04", "Practitioner"] },
+  { name: "Linda Raschke", alias: "The Tape Reader", badges: ["Ch. 04", "Practitioner"] },
+  { name: "Quant/HFT Savant", alias: "Anonymous — The Latency Arbitrageur", badges: ["Ch. 04", "Practitioner"] },
+  { name: "Sarah Rossbach", alias: "The Feng Shui Cartographer", badges: ["Ch. 04", "Visionary"] },
+  { name: "Caroline Myss", alias: "The Sacred Contract", badges: ["Ch. 04", "Visionary"] },
+  { name: "Nassim Taleb", alias: "The Antifragile", badges: ["Ch. 04", "Visionary"] },
+  // Ch. 05 — Human–Systems Intelligence Interaction
+  { name: "Dr. Miguel Nicolelis", alias: "The Brainet", badges: ["Ch. 05", "Academic"] },
+  { name: "Dr. Alex Pentland", alias: "The Honest Signals", badges: ["Ch. 05", "Academic"] },
+  { name: "Dr. Shannon Vallor", alias: "The Technomoral Virtue", badges: ["Ch. 05", "Academic"] },
+  { name: "Dr. Thomas Oxley", alias: "The Endovascular BCI", badges: ["Ch. 05", "Practitioner"] },
+  { name: "Tristan Harris", alias: "The Attention Defender", badges: ["Ch. 05", "Practitioner"] },
+  { name: "Jimmy Wales", alias: "The Wikipedia Commons", badges: ["Ch. 05", "Practitioner"] },
+  { name: "BCI User", alias: "Anonymous — The First-Person Interface", badges: ["Ch. 05", "Visionary"] },
+  { name: "Thich Nhat Hanh Foundation", alias: "The Interbeing", badges: ["Ch. 05", "Visionary"] },
+  { name: "Donna Haraway", alias: "The Cyborg Manifesto", badges: ["Ch. 05", "Visionary"] },
+  // Ch. 06 — Consciousness as Pattern Recognition
+  { name: "Stuart Russell", alias: "The Human Compatible", badges: ["Ch. 06", "Academic"] },
+  { name: "Dr. Timnit Gebru", alias: "The Stochastic Parrot", badges: ["Ch. 06", "Academic"] },
+  { name: "Kate Crawford", alias: "The Atlas of AI", badges: ["Ch. 06", "Academic"] },
+  { name: "Norbert Wiener", alias: "The Cybernetic Warning", badges: ["Ch. 06", "Practitioner"] },
+  { name: "Margaret Mitchell", alias: "The Model Card", badges: ["Ch. 06", "Practitioner"] },
+  { name: "In-Q-Tel Operator", alias: "Anonymous — The Strategic Invest", badges: ["Ch. 06", "Practitioner"] },
+  { name: "Sir Roger Penrose", alias: "The Orch-OR", badges: ["Ch. 06", "Visionary"] },
+  { name: "Antonio Damasio", alias: "The Somatic Marker", badges: ["Ch. 06", "Visionary"] },
+  { name: "Rupert Sheldrake", alias: "The Morphic Field", badges: ["Ch. 06", "Visionary"] },
+  // Ch. 07 — Engineering Reality
+  { name: "Dr. John Preskill", alias: "The Quantum Supremacy", badges: ["Ch. 07", "Academic"] },
+  { name: "Seth Lloyd", alias: "The Programmable Universe", badges: ["Ch. 07", "Academic"] },
+  { name: "Chip Huyen", alias: "The ML Systems Builder", badges: ["Ch. 07", "Academic"] },
+  { name: "Jeff Dean", alias: "The Distributed Systems Oracle", badges: ["Ch. 07", "Practitioner"] },
+  { name: "Dr. Lisa Su", alias: "The Silicon Helmsman", badges: ["Ch. 07", "Practitioner"] },
+  { name: "Wendell Weeks", alias: "The Gorilla Glass", badges: ["Ch. 07", "Practitioner"] },
+  { name: "Neri Oxman", alias: "The Material Ecology", badges: ["Ch. 07", "Visionary"] },
+  { name: "DARPA Operator", alias: "Anonymous — The Hard Problems Desk", badges: ["Ch. 07", "Visionary"] },
+  { name: "Dr. Fei-Fei Li", alias: "The ImageNet Visionary", badges: ["Ch. 07", "Visionary"] },
+  // Ch. 08 — Beyond Human Intelligence
+  { name: "Dr. Max Tegmark", alias: "The Mathematical Universe", badges: ["Ch. 08", "Academic"] },
+  { name: "Dr. Nick Bostrom", alias: "The Superintelligence", badges: ["Ch. 08", "Academic"] },
+  { name: "Dr. Jill Tarter", alias: "The SETI Signal", badges: ["Ch. 08", "Academic"] },
+  { name: "Dr. Sara Seager", alias: "The Exoplanet Hunter", badges: ["Ch. 08", "Practitioner"] },
+  { name: "Dr. David Chalmers", alias: "The Hard Problem", badges: ["Ch. 08", "Practitioner"] },
+  { name: "Anil Seth", alias: "The Controlled Hallucination", badges: ["Ch. 08", "Practitioner"] },
+  { name: "Liu Cixin", alias: "The Dark Forest", badges: ["Ch. 08", "Visionary"] },
+  { name: "Dr. Thomas Nagel", alias: "The Bat's-Eye View", badges: ["Ch. 08", "Visionary"] },
+  { name: "Srinivasa Ramanujan", alias: "The Namagiri Download", badges: ["Ch. 08", "Visionary"] },
+  // Ch. 09 — No Way? Know-How.
+  { name: "David Autor", alias: "The Task Decomposition", badges: ["Ch. 09", "Academic"] },
+  { name: "Kate Raworth", alias: "The Doughnut Economist", badges: ["Ch. 09", "Academic"] },
+  { name: "François Chollet", alias: "The Abstraction Benchmark", badges: ["Ch. 09", "Academic"] },
+  { name: "Emad Mostaque", alias: "The Stability Primitive", badges: ["Ch. 09", "Practitioner"] },
+  { name: "Dr. Fiona Hill", alias: "The Kleptocracy Analyst", badges: ["Ch. 09", "Practitioner"] },
+  { name: "Peter Senge", alias: "The Learning Organization", badges: ["Ch. 09", "Practitioner"] },
+  { name: "Charles Eisenstein", alias: "The Gift Economy", badges: ["Ch. 09", "Visionary"] },
+  { name: "Sherry Turkle", alias: "The Alone Together", badges: ["Ch. 09", "Visionary"] },
+  { name: "MK-Ultra Operator", alias: "Anonymous — The Cognitive Program", badges: ["Ch. 09", "Visionary"] }
 ];
 
 const WantedCard: React.FC<{ person: Person, index: number, onClick?: () => void }> = ({ person, index, onClick }) => (
@@ -651,7 +728,7 @@ const Wanted = ({ onViewAll, onSelectPerson }: { onViewAll: () => void, onSelect
             <p className="font-mono text-[0.58rem] text-ink-light tracking-[0.1em] uppercase">
               3⁴ - 77 More at Large · Full List on GitHub
             </p>
-            <a href="https://github.com/knowwareinstitute/systemsofintelligence" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 font-mono text-[0.52rem] tracking-[0.18em] uppercase text-ink-light border border-ink/10 px-2 py-1 hover:text-red-accent hover:border-red-accent transition-colors">
+            <a href="https://github.com/iamkhayyam/systemsofintelligence-book" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 font-mono text-[0.52rem] tracking-[0.18em] uppercase text-ink-light border border-ink/10 px-2 py-1 hover:text-red-accent hover:border-red-accent transition-colors">
               <Star size={8} className="fill-current" /> Star
             </a>
           </div>
@@ -728,8 +805,8 @@ const WantedPage = ({ onBack, onSelectPerson }: { onBack: () => void, onSelectPe
       
       <footer className="border-t border-ink bg-paper-mid py-4 px-10">
         <div className="max-w-[1100px] mx-auto flex justify-between items-center">
-          <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-ink-light">Knowware Institute · 2026</span>
-          <a href="https://github.com/knowwareinstitute/systemsofintelligence" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 font-mono text-[0.5rem] tracking-[0.2em] uppercase text-ink-light hover:text-red-accent transition-colors">
+          <span className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-ink-light">© Khayyam Wakil · 2026</span>
+          <a href="https://github.com/iamkhayyam/systemsofintelligence-book" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 font-mono text-[0.5rem] tracking-[0.2em] uppercase text-ink-light hover:text-red-accent transition-colors">
             <Star size={10} className="fill-current" /> Star on GitHub
           </a>
         </div>
@@ -813,12 +890,12 @@ const PersonDetail = ({ person, onBack }: { person: Person, onBack: () => void }
                   <div className="font-mono text-[0.7rem] text-ink">Unclaimed Variable</div>
                   
                   <div className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-ink-light border-b border-ink/10 pb-1">Last Seen</div>
-                  <div className="font-mono text-[0.7rem] text-ink">Chapter 02: The Ladder of Causation</div>
+                  <div className="font-mono text-[0.7rem] text-ink">{person.badges[0] || "Unclaimed"} · {person.badges[1] || "Voice"}</div>
                 </div>
 
                 <div className="pt-4 space-y-3">
                   <button 
-                    onClick={() => alert("Self-surrender protocol initiated. Please report to the nearest A.R.C. Institute terminal for reward processing.")}
+                    onClick={() => alert("Self-surrender protocol initiated. Please report to the nearest Knowware terminal for reward processing.")}
                     className="w-full bg-red-accent text-white font-mono text-[0.6rem] tracking-[0.2em] uppercase py-3 hover:bg-ink transition-colors flex items-center justify-center gap-2"
                   >
                     <ShieldCheck size={14} /> Turn Yourself In
@@ -853,7 +930,7 @@ const PersonDetail = ({ person, onBack }: { person: Person, onBack: () => void }
               <div className="space-y-4">
                 <h1 className="font-serif text-[3rem] leading-none text-ink italic">{person.name}</h1>
                 <p className="font-mono text-[0.8rem] tracking-[0.05em] text-ink-mid leading-relaxed">
-                  {person.bio || "No detailed dossier available for this entity. Information is currently being synthesized by the Knowware Institute."}
+                  {person.bio || "No detailed dossier available for this entity. Full synthesized interview lives in the book repo — 42+ minutes, 5,000–8,500 words."}
                 </p>
               </div>
 
@@ -1071,12 +1148,30 @@ const ChapterPage = ({ chapter, onBack }: { chapter: Chapter, onBack: () => void
                 "The coordination of these nine voices creates a resonance that transcends the individual contributions. In {chapter.num}, we see the pattern of intelligence emerging from the noise of raw data."
               </div>
               <div className="flex flex-wrap gap-4 pt-6">
-                <button className="bg-red-accent text-white font-mono text-[0.65rem] tracking-[0.2em] uppercase px-8 py-4 hover:bg-white hover:text-ink transition-all flex items-center gap-3 group">
-                  Read Full Transcript <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                </button>
-                <button className="border border-white/20 text-white font-mono text-[0.65rem] tracking-[0.2em] uppercase px-8 py-4 hover:border-red-accent hover:text-red-accent transition-all">
-                  View Citations
-                </button>
+                {(() => {
+                  const chNum = chapter.num.split(' ')[1];
+                  const chSlug = chNum === "10" ? "chX" : `ch${chNum}`;
+                  return (
+                    <>
+                      <a
+                        href={`https://github.com/iamkhayyam/systemsofintelligence-book/tree/main/chapters/${chSlug}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-red-accent text-white font-mono text-[0.65rem] tracking-[0.2em] uppercase px-8 py-4 hover:bg-white hover:text-ink transition-all flex items-center gap-3 group"
+                      >
+                        Read Full Chapter <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                      </a>
+                      <a
+                        href={`https://github.com/iamkhayyam/systemsofintelligence-book/tree/main/chapters/${chSlug}/interviews`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="border border-white/20 text-white font-mono text-[0.65rem] tracking-[0.2em] uppercase px-8 py-4 hover:border-red-accent hover:text-red-accent transition-all"
+                      >
+                        9 Interviews
+                      </a>
+                    </>
+                  );
+                })()}
               </div>
             </div>
           </motion.div>
@@ -1144,25 +1239,25 @@ const GitHubSection = () => {
             The full transcripts don't fit in the book. They live on GitHub — 3⁴ interviews, open to the public, correctable by the people who gave them. Every commit is coordination. Every PR is the third body.
           </p>
           <div className="flex gap-2.5">
-            <a href="https://github.com/knowwareinstitute/systemsofintelligence" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-mono text-[0.58rem] tracking-[0.14em] uppercase text-white bg-red-accent px-4.5 py-2.5 hover:bg-red-accent/80 transition-colors">
+            <a href="https://github.com/iamkhayyam/systemsofintelligence-book" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-mono text-[0.58rem] tracking-[0.14em] uppercase text-white bg-red-accent px-4.5 py-2.5 hover:bg-red-accent/80 transition-colors">
               <Star size={12} className="fill-current" /> Star on GitHub
             </a>
-            <a href="#" className="font-mono text-[0.58rem] tracking-[0.14em] uppercase text-white border border-white/20 px-4.5 py-2.5 hover:border-red-accent hover:text-red-accent transition-colors">View Repository</a>
+            <a href="https://github.com/iamkhayyam/systemsofintelligence-book" target="_blank" rel="noopener noreferrer" className="font-mono text-[0.58rem] tracking-[0.14em] uppercase text-white border border-white/20 px-4.5 py-2.5 hover:border-red-accent hover:text-red-accent transition-colors">View Repository</a>
           </div>
         </motion.div>
         <motion.div {...fadeIn} transition={{ delay: 0.2 }} className="border border-white/10 p-6 bg-zinc-900">
-          <div className="font-mono text-[0.54rem] tracking-[0.14em] text-white/30 uppercase mb-1">github.com / knowwareinstitute /</div>
-          <div className="font-mono text-[0.88rem] font-medium tracking-[0.08em] text-white mb-2.5">systemsofintelligence</div>
+          <div className="font-mono text-[0.54rem] tracking-[0.14em] text-white/30 uppercase mb-1">github.com / iamkhayyam /</div>
+          <div className="font-mono text-[0.88rem] font-medium tracking-[0.08em] text-white mb-2.5">systemsofintelligence-book</div>
           <p className="font-sans font-light text-[0.72rem] text-white/40 leading-relaxed">
             The third body between hardware and software. Binary is confinary. There's always a middle out inside.
           </p>
           <div className="grid grid-cols-3 gap-6 mt-6 pt-6 border-t border-white/10">
             {[
-              { val: "1,248", label: "Commits", color: "text-red-accent" },
+              { val: "57", label: "Commits", color: "text-red-accent" },
               { val: "3⁴", label: "Interviews", sub: "81" },
-              { val: "2.4k", label: "Stars", color: "text-white" },
-              { val: "156", label: "Forks" },
-              { val: "3⁴", label: "Contributors", sub: "81" },
+              { val: "0", label: "Stars", color: "text-white" },
+              { val: "0", label: "Forks" },
+              { val: "3⁴", label: "Voices", sub: "81" },
               { val: "Active", label: "Status", color: "text-green-accent" }
             ].map((s, i) => (
               <div key={i} className="flex flex-col github-stat">
@@ -1324,7 +1419,7 @@ const ManifestoPage = ({ onBack }: { onBack: () => void }) => {
             </button>
             <div>
               <div className="font-mono text-[0.78rem] font-medium tracking-[0.18em] uppercase text-ink">The Manifesto</div>
-              <div className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-red-accent mt-px">Knowware Institute v1.0</div>
+              <div className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-red-accent mt-px">Binary is Confinary · v1.0</div>
             </div>
           </div>
         </div>
@@ -1363,7 +1458,7 @@ const ManifestoPage = ({ onBack }: { onBack: () => void }) => {
             <h2 className="font-serif text-[3.5rem] leading-[1.1] italic text-ink">There is always a third way.</h2>
             <div className="space-y-6 font-sans font-light text-[1.1rem] text-ink-mid leading-relaxed">
               <p>
-                The Knowware Institute is dedicated to the <strong>Middle Out</strong>. We do not look for compromises; we look for higher-order dimensions where the conflict between two points vanishes.
+                Knowware is dedicated to the <strong>Middle Out</strong>. We do not look for compromises; we look for higher-order dimensions where the conflict between two points vanishes.
               </p>
               <p>
                 Our mission is to build the infrastructure for this new consciousness. To map the 81 unclaimed variables of the human-machine interface. To turn the noise of the binary into the signal of the ternary.
@@ -1390,11 +1485,11 @@ const ManifestoPage = ({ onBack }: { onBack: () => void }) => {
 const Footer = () => (
   <footer id="contact" className="border-t border-ink bg-paper-mid">
     <div className="px-10 py-1.5 flex items-center justify-between">
-      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light">Knowware Preprints</span>
-      <a href="https://github.com/knowwareinstitute/systemsofintelligence" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light hover:text-red-accent transition-colors">
+      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light">Systems of Intelligence</span>
+      <a href="https://github.com/iamkhayyam/systemsofintelligence-book" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light hover:text-red-accent transition-colors">
         <Star size={10} className="fill-current" /> Star on GitHub
       </a>
-      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-red-accent font-medium">Registered · Canada</span>
+      <a href="mailto:someone@systemsofintelligence.com" className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-red-accent font-medium hover:text-ink transition-colors">someone@systemsofintelligence.com</a>
     </div>
   </footer>
 );

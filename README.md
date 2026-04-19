@@ -1,20 +1,38 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Knowware — Systems of Intelligence
 
-# Run and deploy your AI Studio app
+Companion website for **Systems of Intelligence** by Khayyam Wakil — the book that asks why every coordination failure of our era (Facebook's contagion experiment, the Uber AV, the 2008 crash, Boeing's MCAS) shares the same architecture, and what the fix looks like.
 
-This contains everything you need to run your app locally.
+- **Book repo:** https://github.com/iamkhayyam/systemsofintelligence-book
+- **Website:** https://systemsofintelligence.com
+- **Contact:** someone@systemsofintelligence.com
 
-View your app in AI Studio: https://ai.studio/apps/5632aec3-23e6-44db-852d-010b8bc8ae8e
+> Hardware ↔ Software ↔ Knowware. Three bodies coordinating. Drop any one and intelligence collapses back into mechanism.
 
-## Run Locally
+## What's in the book (mirrored by this site)
 
-**Prerequisites:**  Node.js
+- 9 interview chapters + 1 capstone (ChX — The Grand Coordination)
+- 81 synthesized expert voices (9 per chapter, triads: Academic / Practitioner / Visionary)
+- Standalone Knowware Manifesto ("Binary is Confinary")
+- 3 appendices — Mathematical Foundations, Technical Implementation, Resources
 
+Chapter titles, subs, and voice rosters in [`src/chapters.ts`](src/chapters.ts) mirror the book repo's `chapters/chNN/interviews/` directories. Keep the two in sync when the book edits.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Run locally
+
+**Prerequisites:** Node.js
+
+```bash
+npm install
+npm run dev          # dev server via tsx + vite middleware on :3000
+```
+
+Production build:
+
+```bash
+npm run build        # vite build → dist/
+npm start            # node server serving dist under /knowware/
+```
+
+## Deploy
+
+Production deploys go through [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
