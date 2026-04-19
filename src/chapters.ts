@@ -2,6 +2,8 @@ import { Chapter } from "./types";
 
 // Voices mirror /chapters/chNN/interviews/ in the book repo.
 // Each chapter has 9 voices, split across Academic / Practitioner / Visionary triads.
+// Names must match the corresponding Person entries in WANTED_LIST exactly — the
+// chapter page uses strict name equality to open a voice's dossier.
 
 export const CHAPTERS: Chapter[] = [
   {
@@ -9,109 +11,249 @@ export const CHAPTERS: Chapter[] = [
     title: "The Coordination Intelligence Revolution",
     sub: "How ternary thinking unlocks human–AI partnership",
     content: "June 2014. Facebook's emotional contagion experiment — 689,003 users whose News Feeds were secretly manipulated — accidentally revealed that intelligence doesn't live in humans or machines. It emerges in the coordination between them. The opening chapter lays the move from binary optimization to ternary coordination.",
+    part: "Part I · Foundation",
+    vignette: {
+      year: "June 2014",
+      location: "Facebook · Cornell · UCSF",
+      title: "The $50 Million Algorithm",
+      body: "689,003 users had their News Feeds secretly manipulated for a week. The goal: measure whether emotional states transfer through algorithmic curation. The answer: a resounding, terrifying yes. But the deeper lesson was accidental — the coordination between algorithms, psychology, and network dynamics produced emergent behavior none of them could generate alone.",
+    },
+    keyTriad: {
+      a: "Algorithm",
+      b: "Human Psychology",
+      c: "Social Network",
+      emerges: "Emotional contagion at scale — a shared emotional landscape",
+    },
+    keyInsight: "Intelligence doesn't live in humans or machines. It emerges in the coordination between them.",
     triads: {
       academic: ["Dr. Paul Pangaro", "Dr. N. Katherine Hayles", "Donella Meadows"],
       practitioner: ["Stewart Brand", "Kevin Kelly", "Yann Minh"],
-      visionary: ["Terence McKenna", "Phillip Deere (Lakota Elder)", "Daniel Schmachtenberger"]
-    }
+      visionary: ["Terence McKenna", "Phillip Deere", "Daniel Schmachtenberger"],
+    },
   },
   {
     num: "Ch. 02",
     title: "The Dawn of Systems Intelligence",
     sub: "Recognizing the third body",
     content: "Netflix didn't win on content or algorithms. It won by coordinating user behavior, content ecosystem, and algorithm optimization simultaneously. Chapter 2 traces the same pattern from Shannon's information theory through Hartmut Neven's quantum AI lab — binary logic was always an approximation. Reality coordinates.",
+    part: "Part I · Foundation",
+    vignette: {
+      year: "2011",
+      location: "Los Gatos, CA · Netflix HQ",
+      title: "The Netflix Secret",
+      body: "Data scientists spotted a peculiar overlap: fans of the British House of Cards, Kevin Spacey fans, and David Fincher devotees were the same people. Not correlation — a signal. Netflix greenlit $100M before a single frame was shot. The algorithm didn't just recommend content; it coordinated user taste with production decisions, reshaping what gets made.",
+    },
+    keyTriad: {
+      a: "User Behavior",
+      b: "Content Ecosystem",
+      c: "Algorithm Optimization",
+      emerges: "Personalization that feels like magic",
+    },
+    keyInsight: "Binary logic was always an approximation. Reality coordinates.",
     triads: {
       academic: ["Dr. Judea Pearl", "Claude Shannon", "Alan Turing"],
-      practitioner: ["Dr. Hartmut Neven", "Former NSA Technical Director (Anonymous)", "Palmer Luckey"],
-      visionary: ["Mo Gawdat", "Hunbatz Men", "Ruqian Lu"]
-    }
+      practitioner: ["Dr. Hartmut Neven", "Former NSA Technical Director", "Palmer Luckey"],
+      visionary: ["Mo Gawdat", "Hunbatz Men", "Ruqian Lu"],
+    },
   },
   {
     num: "Ch. 03",
     title: "Architecture of Systems Intelligence",
     sub: "Three-body architecture patterns",
     content: "A building in Barcelona learns. Sensors, AI, and human occupants coordinate in real-time to produce intelligence none of the three could generate alone. Feynman's path integrals reveal that nature doesn't optimize; it coordinates across every possible path. Capra's autopoiesis completes the triad — the architecture of intelligence is the architecture of life.",
+    part: "Part I · Foundation",
+    vignette: {
+      year: "Present",
+      location: "Barcelona · IAAC",
+      title: "The Building That Thinks",
+      body: "The Institute for Advanced Architecture of Catalonia built something unprecedented: a structure where sensors, AI, and human occupants coordinate in real time. Morning sun adjusts to yesterday's productivity patterns. HVAC coordinates with meeting density. Lighting adapts to circadian rhythms while optimizing for task requirements. Not smart-building automation. Emergent architectural intelligence.",
+    },
+    keyTriad: {
+      a: "Building Sensors",
+      b: "AI Learning System",
+      c: "Human Occupant Behavior",
+      emerges: "Adaptive architectural intelligence",
+    },
+    keyInsight: "The architecture of intelligence is the architecture of life.",
     triads: {
       academic: ["Yann LeCun", "Richard Feynman", "James Gosling"],
       practitioner: ["Dario Amodei", "Demis Hassabis", "Clément Delangue"],
-      visionary: ["Iain McGilchrist", "Fritjof Capra", "Ray Kurzweil"]
-    }
+      visionary: ["Iain McGilchrist", "Fritjof Capra", "Ray Kurzweil"],
+    },
   },
   {
     num: "Ch. 04",
     title: "Systems Intelligence in Action",
     sub: "Ternary coordination case studies",
     content: "Bogotá, 1998. A dying city — homicides at 80 per 100,000, two-hour commutes. Mayor Peñalosa didn't build infrastructure. He coordinated infrastructure with citizen behavior with political vision, and the city healed. Chapter 4 tests whether three-body coordination survives contact with reality: cities, markets, medicine, antifragility.",
+    part: "Part II · Application",
+    vignette: {
+      year: "1998 – 2015",
+      location: "Bogotá, Colombia",
+      title: "The City That Coordinated",
+      body: "A sprawling metropolis dying from its own growth. Homicides at 80 per 100,000. Two-hour commutes. Mayor Enrique Peñalosa didn't build infrastructure — he coordinated it with citizen behavior and political vision. TransMilenio rapid transit paired with bike lanes. Car-free Sundays. Libraries in poor neighborhoods. The city transformed. Homicides dropped 75%.",
+    },
+    keyTriad: {
+      a: "Infrastructure",
+      b: "Citizen Behavior",
+      c: "Political Vision",
+      emerges: "Urban reality transformed — a city that heals itself",
+    },
+    keyInsight: "Three-body coordination is not just how systems work, but how they heal.",
     triads: {
-      academic: ["Carlo Ratti", "Eric Topol", "Andrew Lo"],
-      practitioner: ["Dan Doctoroff", "Linda Raschke", "Quant/HFT Savant (Anonymous)"],
-      visionary: ["Sarah Rossbach", "Caroline Myss", "Nassim Taleb"]
-    }
+      academic: ["Carlo Ratti", "Dr. Eric Topol", "Andrew Lo"],
+      practitioner: ["Dan Doctoroff", "Linda Raschke", "Quant/HFT Savant"],
+      visionary: ["Sarah Rossbach", "Caroline Myss", "Nassim Taleb"],
+    },
   },
   {
     num: "Ch. 05",
     title: "Human–Systems Intelligence Interaction",
     sub: "Ternary human–AI collaboration patterns",
     content: "Ian Burkhart, paralyzed, plays Guitar Hero with his thoughts — brain signals coordinated through a neural interface with muscle stimulation. The boundary between human and machine is already dissolving. The question isn't whether to cross it, but how to coordinate the crossing.",
+    part: "Part II · Application",
+    vignette: {
+      year: "2020",
+      location: "Ohio State University",
+      title: "Ian Burkhart Plays Guitar Hero",
+      body: "A paralyzed man did something impossible: he played a video game using only his thoughts. Not mystical mind-over-matter, but three-body coordination bypassing his severed spinal cord. His brain generated intent. A neural implant decoded it. A computer coordinated the decoded signals with functional electrical stimulation of his paralyzed muscles. Voluntary movement — restored through coordination.",
+    },
+    keyTriad: {
+      a: "Brain Signals",
+      b: "Neural Interface",
+      c: "Muscle Stimulation",
+      emerges: "Voluntary movement restored",
+    },
+    keyInsight: "The boundary between human and machine is already dissolving. The question is how to coordinate the crossing.",
     triads: {
       academic: ["Dr. Miguel Nicolelis", "Dr. Alex Pentland", "Dr. Shannon Vallor"],
       practitioner: ["Dr. Thomas Oxley", "Tristan Harris", "Jimmy Wales"],
-      visionary: ["BCI User (Anonymous)", "Thich Nhat Hanh Foundation", "Donna Haraway"]
-    }
+      visionary: ["BCI User", "Thich Nhat Hanh Foundation", "Donna Haraway"],
+    },
   },
   {
     num: "Ch. 06",
     title: "Consciousness as Pattern Recognition",
     sub: "Perception · processing · awareness",
     content: "October 2018, Tempe. A self-driving Uber detects Elaine Herzberg 5.6 seconds before impact and classifies her as 'unknown object,' then 'vehicle,' then 'bicycle.' It never classifies her as 'pedestrian.' The car had perception and processing but lacked the third body: awareness. Wiener warned of this for sixteen years.",
+    part: "Part II · Application",
+    vignette: {
+      year: "October 2018",
+      location: "Tempe, Arizona",
+      title: "The Uber That Wouldn't See",
+      body: "A self-driving Uber killed Elaine Herzberg — the first pedestrian death caused by an autonomous vehicle. The car's sensors detected her 5.6 seconds before impact. The AI classified her as 'unknown object,' then 'vehicle,' then 'bicycle,' then 'unknown object' again. It never classified her as 'pedestrian.' The car saw her. It didn't understand what it was seeing.",
+    },
+    keyTriad: {
+      a: "Perception",
+      b: "Processing",
+      c: "Awareness",
+      emerges: "Consciousness — understanding what the pattern means",
+    },
+    keyInsight: "Awareness is not a luxury upgrade bolted onto intelligence. It is the coordination layer without which perception and processing cycle in the dark.",
     triads: {
       academic: ["Stuart Russell", "Dr. Timnit Gebru", "Kate Crawford"],
-      practitioner: ["Norbert Wiener", "Margaret Mitchell", "In-Q-Tel Operator (Anonymous)"],
-      visionary: ["Sir Roger Penrose", "Antonio Damasio", "Rupert Sheldrake"]
-    }
+      practitioner: ["Norbert Wiener", "Margaret Mitchell", "In-Q-Tel Operator"],
+      visionary: ["Sir Roger Penrose", "Antonio Damasio", "Rupert Sheldrake"],
+    },
   },
   {
     num: "Ch. 07",
     title: "Engineering Reality",
     sub: "Pattern development and quantum systems",
     content: "Autodesk's generative AI designs an Airbus partition 45% lighter than the human version — alien curves no engineer would imagine, yet structurally superior. Three-body coordination doesn't just improve engineering. It transcends the design space itself, producing solutions outside the boundaries of human imagination.",
+    part: "Part III · Transcendence",
+    vignette: {
+      year: "2019",
+      location: "Autodesk Research",
+      title: "The Alien Airbus Partition",
+      body: "Generative AI designed a partition for the Airbus A320 — 45% lighter than the human-designed version, yet stronger and more manufacturable. Organic curves and lattice structures no human engineer would imagine. The design violated every aesthetic principle of traditional aerospace, but worked perfectly. Optimized by coordinating structural requirements with manufacturing constraints with material properties.",
+    },
+    keyTriad: {
+      a: "Engineer Goals",
+      b: "AI Generation",
+      c: "Manufacturing Reality",
+      emerges: "Solutions outside the boundaries of human imagination",
+    },
+    keyInsight: "Three-body coordination doesn't just improve engineering — it transcends the design space itself.",
     triads: {
       academic: ["Dr. John Preskill", "Seth Lloyd", "Chip Huyen"],
       practitioner: ["Jeff Dean", "Dr. Lisa Su", "Wendell Weeks"],
-      visionary: ["Neri Oxman", "DARPA Operator (Anonymous)", "Dr. Fei-Fei Li"]
-    }
+      visionary: ["Neri Oxman", "DARPA Operator", "Dr. Fei-Fei Li"],
+    },
   },
   {
     num: "Ch. 08",
     title: "Beyond Human Intelligence",
     sub: "Cosmic three-body dynamics",
     content: "Apollo navigated 240,000 miles to a moving target with 4KB of RAM — less than a modern digital watch — by coordinating human judgment with computer calculation with physical reality. Ramanujan's mathematical intuition arrived from a source he could not explain. What does intelligence look like at cosmic scale?",
+    part: "Part III · Transcendence",
+    vignette: {
+      year: "July 20, 1969",
+      location: "Sea of Tranquility · the Moon",
+      title: "4KB to the Moon",
+      body: "The Apollo Guidance Computer had 4KB of RAM — less than a modern digital watch. Human astronauts, confined in a cramped capsule, had limited calculation ability. The unforgiving physics of orbital mechanics demanded precision far beyond either's individual capability. Yet the coordination of human judgment with computer calculation with physical reality produced navigation precision neither could achieve alone.",
+    },
+    keyTriad: {
+      a: "Human Decision-Making",
+      b: "Computer Calculation",
+      c: "Physical Reality",
+      emerges: "Navigation precision impossible with any single element alone",
+    },
+    keyInsight: "Scale coordination to the cosmos and new bodies of intelligence appear.",
     triads: {
       academic: ["Dr. Max Tegmark", "Dr. Nick Bostrom", "Dr. Jill Tarter"],
       practitioner: ["Dr. Sara Seager", "Dr. David Chalmers", "Anil Seth"],
-      visionary: ["Liu Cixin", "Dr. Thomas Nagel", "Srinivasa Ramanujan"]
-    }
+      visionary: ["Liu Cixin", "Dr. Thomas Nagel", "Srinivasa Ramanujan"],
+    },
   },
   {
     num: "Ch. 09",
     title: "No Way? Know-How.",
     sub: "Challenges, barriers, and conscious participation",
     content: "A Stanford AI diagnoses pneumonia at 95% accuracy — better than most radiologists — and gets shut down in six months. Not because it didn't work, but because nobody coordinated the technology with workflow, operations, liability, or trust. Chapter 9 is a sustained confrontation with the barriers that collapse the entire project.",
+    part: "Part III · Transcendence",
+    vignette: {
+      year: "2016",
+      location: "Stanford Hospital",
+      title: "The Pneumonia AI That Got Shut Down",
+      body: "An AI system diagnosed pneumonia from chest X-rays with 95% accuracy — better than most human radiologists. The hospital deployed it. Six months later, they shut it down. Not because it failed. Because nobody coordinated the technology with radiologist workflow, hospital operations, legal liability, or patient trust. The capability was flawless. The coordination was absent.",
+    },
+    keyTriad: {
+      a: "AI Capability",
+      b: "Human Workflow",
+      c: "Institutional Context",
+      emerges: "Integration — or the failure of it",
+    },
+    keyInsight: "Optimizing capability without coordinating with context is the pattern of civilizational failure.",
     triads: {
       academic: ["David Autor", "Kate Raworth", "François Chollet"],
       practitioner: ["Emad Mostaque", "Dr. Fiona Hill", "Peter Senge"],
-      visionary: ["Charles Eisenstein", "Sherry Turkle", "MK-Ultra Operator (Anonymous)"]
-    }
+      visionary: ["Charles Eisenstein", "Sherry Turkle", "MK-Ultra Operator"],
+    },
   },
   {
     num: "Ch. 10",
     title: "The Grand Coordination",
     sub: "Closing the feedback loop · ChX",
     content: "Nine chapters. Eighty-one voices. Systems thinkers and quantum physicists, neuroscientists and urban planners, mystics and engineers — all circling the same insight from different altitudes. The capstone doesn't summarize. It coordinates. The pattern clicks, and you realize it was never hiding; it was waiting for you to develop the eyes.",
+    part: "Capstone · Synthesis",
+    vignette: {
+      year: "—",
+      location: "The Present Moment",
+      title: "The Return",
+      body: "You have been here before. Not in this chapter, not on this page. But the pattern you are about to recognize — you have already been living inside it. Every chapter has been training your perception, the way a musician's ear learns to hear harmonics that were always present in the sound. The harmonics were always there. You can hear them now.",
+    },
+    keyTriad: {
+      a: "Foundation (Ch. 1–3)",
+      b: "Application (Ch. 4–6)",
+      c: "Transcendence (Ch. 7–9)",
+      emerges: "A coordination of understanding more than the sum of its perspectives",
+    },
+    keyInsight: "Nine chapters. Eighty-one voices. One pattern — now visible.",
     triads: {
       academic: ["Foundation triad (Ch. 1–3)", "Pangaro · Shannon · Feynman", "Physics of coordination"],
       practitioner: ["Application triad (Ch. 4–6)", "Peñalosa · Burkhart · Wiener", "Coordination in the world"],
-      visionary: ["Transcendence triad (Ch. 7–9)", "Oxman · Ramanujan · Senge", "Coordination at highest stakes"]
-    }
-  }
+      visionary: ["Transcendence triad (Ch. 7–9)", "Oxman · Ramanujan · Senge", "Coordination at highest stakes"],
+    },
+  },
 ];

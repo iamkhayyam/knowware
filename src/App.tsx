@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useIsPresent } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { ExternalLink, Github, ArrowRight, Star, X, ChevronUp, Share2, Twitter, Linkedin, Link, MessageSquare, Phone, Mail, ShieldCheck } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -7,7 +7,17 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 import { CHAPTERS } from "./chapters";
-import { Chapter } from "./types";
+import { Chapter, Person } from "./types";
+import { initSmoothScroll } from "./lib/smooth-scroll";
+import { bindMagnetsIn } from "./lib/magnet";
+import Cursor from "./components/Cursor";
+import KineticMasthead from "./components/KineticMasthead";
+import VoicesTicker from "./components/VoicesTicker";
+import SplitReveal from "./components/SplitReveal";
+import Counter from "./components/Counter";
+import PageOverlay, { OverlayPhase, OVERLAY_IN_MS, OVERLAY_OUT_MS } from "./components/PageOverlay";
+import PersonDossier from "./components/PersonDossier";
+import ChapterPage from "./components/ChapterPage";
 
 const fadeIn = {
   initial: { opacity: 0, y: 10 },
@@ -53,196 +63,269 @@ const Header = ({ onViewWanted }: { onViewWanted: () => void }) => (
         </a>
       </nav>
     </div>
-    <div className="border-t border-ink/10 px-10 py-1.5 flex items-center justify-between">
-      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light">Systems of Intelligence · Vol. I</span>
-      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light">Draft · April 2026</span>
-      <span className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-red-accent font-medium">81 Voices · 9(+1) Chapters</span>
-    </div>
+    <VoicesTicker />
   </header>
 );
 
-const Masthead = () => {
+const Pillars = () => {
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!rootRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.from(".pillar-card", {
+        y: 28,
+        opacity: 0,
+        duration: 0.9,
+        ease: "expo.out",
+        stagger: 0.12,
+        scrollTrigger: {
+          trigger: rootRef.current,
+          start: "top 80%",
+          once: true,
+        },
+      });
+    }, rootRef);
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="masthead" className="border-b border-ink px-10 py-20 md:py-16">
-      <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-18 items-end">
-        <motion.div {...fadeIn} className="headline">
-          <h1 className="font-mono text-[clamp(3rem,6vw,5.5rem)] font-medium tracking-[0.06em] uppercase text-ink leading-none mb-2.5">
-            Knowware
-          </h1>
-          <div className="font-mono text-[0.6rem] tracking-[0.24em] uppercase text-red-accent font-medium mb-6">
-            Systems of Intelligence · Vol. I
+    <section id="pillars" className="border-b border-ink" ref={rootRef}>
+      <div className="grid grid-cols-1 md:grid-cols-3 max-w-[1100px] mx-auto">
+        {[
+          { num: "01", title: "The Book", desc: "81 expert interviews across 10 chapters. The complete ternary coordination framework." },
+          { num: "02", title: "The Manifesto", desc: "Binary is confinary. The case for seeing ternary — and why it can't be unseen." },
+          { num: "03", title: "The Movement", desc: "A community of practitioners, builders, and seekers coordinating around a third way." }
+        ].map((pillar) => (
+          <div
+            key={pillar.num}
+            className="pillar-card relative p-9 md:p-10 border-b md:border-b-0 md:border-r border-ink last:border-r-0 group overflow-hidden"
+          >
+            <span className="absolute left-0 top-0 h-0.5 w-0 bg-red-accent group-hover:w-full transition-all duration-[650ms] ease-[cubic-bezier(0.16,1,0.3,1)]" aria-hidden />
+            <div className="font-mono text-[0.54rem] tracking-[0.22em] uppercase text-red-accent font-medium mb-3 flex items-center gap-2">
+              <span className="tabular-nums">{pillar.num}</span>
+              <span className="h-px w-8 bg-red-accent/40" />
+            </div>
+            <div className="font-mono text-[0.82rem] font-medium tracking-[0.1em] uppercase text-ink mb-3">{pillar.title}</div>
+            <p className="font-sans text-[0.85rem] text-ink-mid leading-[1.7] font-light">{pillar.desc}</p>
           </div>
-          <hr className="border-none border-t border-ink mb-5" />
-          <p className="font-serif italic text-[1.05rem] text-ink-mid leading-relaxed">
-            "When software meets hardware and fall in love, that's Knowware."
-          </p>
-        </motion.div>
-        <motion.div {...fadeIn} transition={{ delay: 0.1 }} className="meta">
-          <div className="flex gap-8 pb-5.5 border-b border-ink mb-5.5">
-            {[
-              { num: "81", label: "Expert Voices" },
-              { num: "9(+1)", label: "Chapters" },
-              { num: "Base(9)", label: "Structure" }
-            ].map((stat) => (
-              <div key={stat.label}>
-                <div className="font-mono text-[2.2rem] font-medium leading-none text-ink tracking-[0.04em] whitespace-nowrap">{stat.num}</div>
-                <div className="font-mono text-[0.54rem] tracking-[0.2em] uppercase text-red-accent mt-1">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-          <div className="font-serif text-[0.92rem] leading-[1.65] text-ink italic border-l-2 border-red-accent pl-4 mb-8">
-            "Binary is confinary. There's always a middle out inside."
-          </div>
-          <div className="flex gap-3">
-            <a href="https://github.com/iamkhayyam/systemsofintelligence-book" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-mono text-[0.6rem] tracking-[0.2em] uppercase bg-ink text-paper px-6 py-3.5 hover:bg-red-accent transition-colors">
-              <Star size={12} className="fill-current" /> Star on GitHub
-            </a>
-            <a href="#github" className="flex items-center gap-2 font-mono text-[0.6rem] tracking-[0.2em] uppercase border border-ink text-ink px-6 py-3.5 hover:border-red-accent hover:text-red-accent transition-colors">
-              View Transcripts
-            </a>
-          </div>
-        </motion.div>
+        ))}
       </div>
     </section>
   );
 };
 
-const Pillars = () => (
-  <section id="pillars" className="border-b border-ink">
-    <div className="grid grid-cols-1 md:grid-cols-3 max-w-[1100px] mx-auto">
-      {[
-        { num: "01", title: "The Book", desc: "81 expert interviews across 10 chapters. The complete ternary coordination framework." },
-        { num: "02", title: "The Manifesto", desc: "Binary is confinary. The case for seeing ternary — and why it can't be unseen." },
-        { num: "03", title: "The Movement", desc: "A community of practitioners, builders, and seekers coordinating around a third way." }
-      ].map((pillar, i) => (
-        <motion.div 
-          key={pillar.num} 
-          {...fadeIn} 
-          transition={{ delay: i * 0.1 }}
-          className={`p-7.5 md:p-9 border-b md:border-b-0 md:border-r border-ink last:border-r-0`}
-        >
-          <div className="font-mono text-[0.54rem] tracking-[0.22em] uppercase text-red-accent font-medium mb-2">{pillar.num} —</div>
-          <div className="font-mono text-[0.76rem] font-medium tracking-[0.1em] uppercase text-ink mb-2">{pillar.title}</div>
-          <p className="font-sans text-[0.78rem] text-ink-mid leading-[1.65] font-light">{pillar.desc}</p>
-        </motion.div>
-      ))}
-    </div>
-  </section>
-);
+const TheSimpleTruth = () => {
+  const formulaRef = useRef<HTMLDivElement>(null);
 
-const TheSimpleTruth = () => (
-  <section id="the-truth" className="px-10 py-20 border-b border-ink bg-paper-mid relative overflow-hidden">
-    {/* Background "Chalkboard" elements */}
-    <div className="absolute top-0 right-0 w-1/3 h-full opacity-[0.03] pointer-events-none select-none font-mono text-[10rem] leading-none text-ink flex flex-col items-end pr-10 pt-10">
-      <div>3⁴</div>
-      <div>9²</div>
-      <div>81</div>
-    </div>
+  useEffect(() => {
+    if (!formulaRef.current) return;
+    const ctx = gsap.context(() => {
+      const letters = formulaRef.current!.querySelectorAll<HTMLElement>(".formula-letter");
+      const ops = formulaRef.current!.querySelectorAll<HTMLElement>(".formula-op");
+      const paths = formulaRef.current!.querySelectorAll<SVGPathElement>("svg path.formula-draw");
 
-    <div className="max-w-[1100px] mx-auto">
-      <motion.div {...fadeIn} className="section-divider border-ink mb-12">
-        <div>
-          <span className="section-label text-red-accent font-medium">The Core Concept</span>
-          <div className="section-head">THE TRUTH</div>
-        </div>
-        <span className="section-sub">"What is this thing?"</span>
-      </motion.div>
+      paths.forEach((p) => {
+        const len = p.getTotalLength();
+        gsap.set(p, { strokeDasharray: len, strokeDashoffset: len });
+      });
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-12 items-start">
-        <motion.div {...fadeIn} className="md:col-span-8 space-y-8">
-          <div className="font-serif italic text-[1.4rem] md:text-[1.8rem] text-ink leading-relaxed">
-            "It's actually very simple. We've been thinking about computers as things that follow instructions (software) on top of things that move electrons (hardware). But that's not how the world actually works."
-          </div>
-          
-          <div className="space-y-6 font-sans font-light text-[1rem] text-ink-mid leading-[1.8]">
-            <p>
-              Consider a <strong>murmuration of starlings</strong>. Thousands of birds moving as a single, fluid organism. You don't give them a 'software' manual on how to maintain the shape. And you don't build 'hardware' tracks in the sky for them to follow. They just... <strong>coordinate</strong>.
-            </p>
-            <p>
-              There's a third thing. A pattern. A signal that moves between the birds. That's what we call <strong>Knowware</strong>. It's the intelligence that emerges when things start talking to each other in a way that creates something bigger than the sum of the parts.
-            </p>
-            <p>
-              This book isn't just about AI or robots. It's about the <em>physics of coordination</em>. Why 81 voices? Because 9 squared is a beautiful, complete number in this base-9 universe we've discovered. We're looking for the pattern that connects the body to the mind, and the mind to the cosmos.
-            </p>
-          </div>
-        </motion.div>
+      const tl = gsap.timeline({
+        defaults: { ease: "power3.out" },
+        scrollTrigger: {
+          trigger: formulaRef.current,
+          start: "top 75%",
+          once: true,
+        },
+      });
+      tl.from(letters, { y: 28, opacity: 0, stagger: 0.2, duration: 0.7 })
+        .from(ops, { scale: 0, opacity: 0, stagger: 0.2, duration: 0.5 }, "-=0.9")
+        .to(paths, { strokeDashoffset: 0, duration: 1.1, stagger: 0.1 }, "-=0.4")
+        .from(formulaRef.current!.querySelectorAll(".formula-label"), {
+          opacity: 0,
+          y: 6,
+          stagger: 0.08,
+          duration: 0.5,
+        }, "-=0.8");
+    }, formulaRef);
 
-        <motion.div {...fadeIn} transition={{ delay: 0.2 }} className="md:col-span-4 space-y-6">
-          <div className="border border-ink p-8 bg-paper relative">
-            <div className="font-mono text-[0.54rem] tracking-[0.22em] uppercase text-red-accent font-medium mb-4">Author's Note —</div>
-            <p className="font-serif italic text-[1.1rem] text-ink leading-relaxed mb-6">
-              "Coordination is the ghost in the machine that makes the machine more than a machine."
-            </p>
-            <div className="h-px bg-ink/10 w-full mb-6"></div>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink-light">Topic</span>
-                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink">Coordination</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink-light">Base</span>
-                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink">9 (Ternary)</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink-light">Complexity</span>
-                <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink">Emergent</span>
-              </div>
-            </div>
+    return () => ctx.revert();
+  }, []);
 
-            <div className="mt-10 pt-8 border-t border-ink/10">
-              <div className="font-mono text-[0.54rem] tracking-[0.2em] uppercase text-red-accent font-bold mb-4">The Formula</div>
-              <div className="flex items-center justify-between font-mono text-[1.5rem] text-ink">
-                <div className="flex flex-col items-center">
-                  <span className="text-[0.5rem] text-ink-light mb-1 uppercase tracking-widest">Body</span>
-                  H
-                </div>
-                <span className="text-red-accent text-sm">+</span>
-                <div className="flex flex-col items-center">
-                  <span className="text-[0.5rem] text-ink-light mb-1 uppercase tracking-widest">Mind</span>
-                  S
-                </div>
-                <span className="text-red-accent text-sm">→</span>
-                <div className="flex flex-col items-center">
-                  <span className="text-[0.5rem] text-red-accent mb-1 uppercase tracking-widest">Soul</span>
-                  K
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="p-6 border border-ink/10 font-mono text-[0.5rem] tracking-[0.15em] leading-relaxed text-ink-light uppercase">
-            Note: This is not a textbook. It is a cognitive realignment. Proceed with caution.
-          </div>
-        </motion.div>
+  return (
+    <section id="the-truth" className="px-10 py-24 border-b border-ink bg-paper-mid relative overflow-hidden">
+      {/* Background numerals, slight parallax via transform on scroll could be added later */}
+      <div className="absolute top-0 right-0 w-1/3 h-full opacity-[0.035] pointer-events-none select-none font-mono text-[12rem] leading-none text-ink flex flex-col items-end pr-10 pt-10">
+        <div>3⁴</div>
+        <div>9²</div>
+        <div>81</div>
       </div>
-    </div>
-  </section>
-);
+
+      <div className="max-w-[1100px] mx-auto">
+        <div className="section-divider border-ink mb-14">
+          <div>
+            <span className="section-label text-red-accent font-medium">The Core Concept</span>
+            <SplitReveal
+              as="div"
+              className="section-head"
+              stagger={0.04}
+              split="char"
+            >
+              THE TRUTH
+            </SplitReveal>
+          </div>
+          <span className="section-sub">"What is this thing?"</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-14 items-start">
+          <div className="md:col-span-8 space-y-8">
+            <SplitReveal
+              as="div"
+              className="font-serif italic text-[1.5rem] md:text-[1.95rem] text-ink leading-[1.35]"
+              stagger={0.03}
+              split="word"
+            >
+              "It's actually very simple. We've been thinking about computers as things that follow instructions (software) on top of things that move electrons (hardware). But that's not how the world actually works."
+            </SplitReveal>
+
+            <motion.div
+              {...fadeIn}
+              className="space-y-6 font-sans font-light text-[1rem] text-ink-mid leading-[1.85]"
+            >
+              <p>
+                Consider a <strong>murmuration of starlings</strong>. Thousands of birds moving as a single, fluid organism. You don't give them a 'software' manual. You don't build 'hardware' tracks in the sky. They just… <strong>coordinate</strong>.
+              </p>
+              <p>
+                There's a third thing. A pattern. A signal that moves between the birds. That's what we call <strong>Knowware</strong> — the intelligence that emerges when parts start talking to each other in a way that creates something bigger than the sum.
+              </p>
+              <p>
+                This book isn't about AI or robots. It's about the <em>physics of coordination</em>. Why 81 voices? 9 per chapter × 9 chapters. 3⁴. The pattern connecting body to mind, and mind to cosmos.
+              </p>
+            </motion.div>
+          </div>
+
+          <motion.div {...fadeIn} transition={{ delay: 0.2 }} className="md:col-span-4 space-y-6">
+            <div className="border border-ink p-8 bg-paper relative">
+              <div className="font-mono text-[0.54rem] tracking-[0.22em] uppercase text-red-accent font-medium mb-4">Author's Note —</div>
+              <p className="font-serif italic text-[1.15rem] text-ink leading-relaxed mb-6">
+                "Coordination is the ghost in the machine that makes the machine more than a machine."
+              </p>
+              <div className="h-px bg-ink/10 w-full mb-6"></div>
+              <div className="space-y-4">
+                {[
+                  ["Topic", "Coordination"],
+                  ["Base", "9 (Ternary)"],
+                  ["Complexity", "Emergent"],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex justify-between items-center">
+                    <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink-light">{k}</span>
+                    <span className="font-mono text-[0.55rem] uppercase tracking-widest text-ink">{v}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Animated formula: H ─+─ S ─→─ K with drawn connectors */}
+              <div className="mt-10 pt-8 border-t border-ink/10" ref={formulaRef}>
+                <div className="font-mono text-[0.54rem] tracking-[0.2em] uppercase text-red-accent font-bold mb-5">The Formula</div>
+                <div className="relative">
+                  <svg
+                    className="absolute inset-0 w-full h-full pointer-events-none"
+                    viewBox="0 0 300 80"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      className="formula-draw"
+                      d="M 55 40 L 115 40"
+                      stroke="currentColor"
+                      strokeWidth="1"
+                      fill="none"
+                      style={{ color: "rgba(0,0,0,0.25)" }}
+                    />
+                    <path
+                      className="formula-draw"
+                      d="M 175 40 L 240 40"
+                      stroke="#e60000"
+                      strokeWidth="1.5"
+                      fill="none"
+                    />
+                    <path
+                      className="formula-draw"
+                      d="M 232 34 L 240 40 L 232 46"
+                      stroke="#e60000"
+                      strokeWidth="1.5"
+                      fill="none"
+                    />
+                  </svg>
+                  <div className="flex items-center justify-between font-mono text-[1.75rem] text-ink relative">
+                    <div className="flex flex-col items-center w-10">
+                      <span className="formula-label text-[0.5rem] text-ink-light mb-1 uppercase tracking-widest">Body</span>
+                      <span className="formula-letter">H</span>
+                    </div>
+                    <span className="formula-op text-red-accent text-[1.1rem]">+</span>
+                    <div className="flex flex-col items-center w-10">
+                      <span className="formula-label text-[0.5rem] text-ink-light mb-1 uppercase tracking-widest">Mind</span>
+                      <span className="formula-letter">S</span>
+                    </div>
+                    <span className="formula-op text-red-accent text-[1.1rem]">→</span>
+                    <div className="flex flex-col items-center w-10">
+                      <span className="formula-label text-[0.5rem] text-red-accent mb-1 uppercase tracking-widest">Soul</span>
+                      <span className="formula-letter text-red-accent">K</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 border border-ink/10 font-mono text-[0.5rem] tracking-[0.15em] leading-relaxed text-ink-light uppercase">
+              Note: This is not a textbook. It is a cognitive realignment. Proceed with caution.
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 const Chapters = ({ onSelectChapter }: { onSelectChapter: (ch: Chapter) => void }) => (
-  <section id="chapters" className="px-10 py-14 border-b border-ink">
+  <section id="chapters" className="px-10 py-20 border-b border-ink">
     <div className="max-w-[1100px] mx-auto">
-      <motion.div {...fadeIn} className="section-divider border-ink">
+      <div className="section-divider border-ink">
         <div>
           <span className="section-label text-red-accent font-medium">The Book</span>
-          <div className="section-head">3⁴ Voices. One Pattern.</div>
+          <SplitReveal as="div" className="section-head" stagger={0.05} split="word">
+            3⁴ Voices. One Pattern.
+          </SplitReveal>
         </div>
         <span className="section-sub">9(+1) CHAPTERS</span>
-      </motion.div>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 border border-ink bg-ink/5 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[8px_8px_0px_0px_rgba(230,0,0,1)] transition-all duration-500">
         {CHAPTERS.map((ch, i) => (
-          <motion.div 
-            key={ch.num} 
+          <motion.div
+            key={ch.num}
             {...fadeIn}
             transition={{ delay: i * 0.05 }}
             onClick={() => onSelectChapter(ch)}
-            className="p-3.5 px-5 border-b border-r border-ink hover:bg-red-accent hover:text-white transition-colors flex gap-4.5 items-baseline last:border-b-0 md:[&:nth-child(2n)]:border-r-0 md:[&:nth-last-child(-n+2)]:border-b-0 group cursor-pointer"
+            data-cursor="Open"
+            className="relative p-4 px-6 border-b border-r border-ink hover:bg-red-accent hover:text-white transition-colors duration-300 flex gap-5 items-baseline last:border-b-0 md:[&:nth-child(2n)]:border-r-0 md:[&:nth-last-child(-n+2)]:border-b-0 group cursor-pointer overflow-hidden"
           >
-            <div className="font-mono text-[0.54rem] tracking-[0.14em] uppercase text-ink-light group-hover:text-white/70 whitespace-nowrap shrink-0">{ch.num}</div>
-            <div>
-              <div className="font-mono text-[0.7rem] font-medium tracking-[0.06em] text-ink group-hover:text-white">{ch.title}</div>
-              <div className="font-mono text-[0.54rem] tracking-[0.08em] text-ink-light group-hover:text-white/70 mt-0.5">{ch.sub}</div>
+            {/* Diagonal wipe fill on hover — red sweeps in from the left */}
+            <span className="absolute inset-0 bg-red-accent origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-[550ms] ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none" aria-hidden />
+
+            <div className="relative font-mono text-[0.54rem] tracking-[0.14em] uppercase text-ink-light group-hover:text-white/80 whitespace-nowrap shrink-0 tabular-nums">
+              {ch.num}
             </div>
+            <div className="relative flex-1 min-w-0">
+              <div className="font-mono text-[0.72rem] font-medium tracking-[0.06em] text-ink group-hover:text-white truncate">
+                {ch.title}
+              </div>
+              <div className="font-mono text-[0.54rem] tracking-[0.08em] text-ink-light group-hover:text-white/80 mt-1 truncate">
+                {ch.sub}
+              </div>
+            </div>
+            <ArrowRight
+              size={12}
+              className="relative text-ink-light group-hover:text-white opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 shrink-0 self-center"
+            />
           </motion.div>
         ))}
       </div>
@@ -478,7 +561,7 @@ const SacredGeometry = ({ onSelectChapter }: { onSelectChapter: (ch: Chapter) =>
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="fixed inset-0 z-[100] bg-paper overflow-y-auto p-10 md:p-20"
+          className="fixed inset-0 z-[100] bg-paper overflow-y-auto p-10 md:p-20" data-lenis-prevent
         >
           <div className="max-w-[800px] mx-auto">
             <button 
@@ -564,22 +647,55 @@ const SacredGeometry = ({ onSelectChapter }: { onSelectChapter: (ch: Chapter) =>
   );
 };
 
-interface Person {
-  name: string;
-  alias: string;
-  badges: string[];
-  bio?: string;
-  contributions?: string[];
-  quote?: string;
-}
-
 const WANTED_LIST: Person[] = [
   // Ch. 01 — The Coordination Intelligence Revolution
   { name: "Dr. Paul Pangaro", alias: "The Conversation Theorist", badges: ["Ch. 01", "Academic"] },
   { name: "Dr. N. Katherine Hayles", alias: "The Posthuman Reader", badges: ["Ch. 01", "Academic"] },
-  { name: "Donella Meadows", alias: "The Leverage Point", badges: ["Ch. 01", "Academic"] },
-  { name: "Stewart Brand", alias: "The Whole Earth Signal", badges: ["Ch. 01", "Practitioner"] },
-  { name: "Kevin Kelly", alias: "The Technium Scribe", badges: ["Ch. 01", "Practitioner"] },
+  {
+    name: "Donella Meadows",
+    alias: "The Leverage Point",
+    badges: ["Ch. 01", "Academic"],
+    affiliation: "Dartmouth College · Sustainability Institute",
+    active: "1941 – 2001",
+    status: "Legacy",
+    jurisdiction: "Systems Thinking / Sustainability",
+    awards: ["World Federation of United Nations Associations Award", "Ashoka Fellow"],
+    works: ["Thinking in Systems", "The Limits to Growth", "Leverage Points: Places to Intervene in a System"],
+    knownFor: ["Leverage points", "Feedback loops", "Systems thinking", "Balancing vs. reinforcing loops", "Paradigm shifts"],
+    coldOpen: "The most powerful place to intervene in a system is in the mindset or paradigm out of which the system arises. Change the paradigm and you change the goals, the rules, the feedback loops — everything.",
+    bio: "Systems thinker who spent her career explaining why smart people working hard keep making things worse. She modeled global systems before computers could scale them, and argued that the highest leverage point is always the one nobody sees — the paradigm.",
+    whyMatters: "Meadows provides the foundational theory of coordination: feedback loops, leverage points, and the three-body structure of stable systems. Her work shows that intervention without understanding context produces overshoot. She names the coordination problems that the alignment researchers are trying to solve.",
+  },
+  {
+    name: "Stewart Brand",
+    alias: "The Whole Earth Signal",
+    badges: ["Ch. 01", "Practitioner"],
+    affiliation: "The WELL · Whole Earth Institute",
+    active: "1938 – present",
+    status: "Living · Active",
+    jurisdiction: "Technology / Philosophy / Design",
+    awards: ["Golden Goose Award nominee", "Buckminster Fuller Prize nominee"],
+    works: ["The Whole Earth Catalog", "How Buildings Learn", "The Clock of the Long Now"],
+    knownFor: ["Whole Earth Catalog", "Long-now thinking", "Mutualism", "Coordination as philosophy", "Technology as living system"],
+    coldOpen: "Technology wants to coordinate with humanity, not to replace it. The most advanced state of technology is not automation — it's mutualism.",
+    bio: "Counterculture visionary who created the Whole Earth Catalog as a coordination infrastructure for decentralized learning. He recognized that technology is not separate from life but a continuation of it, and that coordination should be distributed, not centralized.",
+    whyMatters: "Brand established the philosophical foundation for coordination intelligence: technology as a living system with its own trajectory, and the commitment to mutualism over replacement. He shows that coordination has always been the goal, even before the field had language for it.",
+  },
+  {
+    name: "Kevin Kelly",
+    alias: "The Technium Scribe",
+    badges: ["Ch. 01", "Practitioner"],
+    affiliation: "Wired Magazine · Long Now Foundation",
+    active: "1952 – present",
+    status: "Living · Active",
+    jurisdiction: "Technology / Evolution / Coordination",
+    awards: ["National Magazine Award nominee"],
+    works: ["Out of Control", "What Technology Wants", "The Inevitable", "Excellent Advice for Living"],
+    knownFor: ["The technium", "Mutualism", "Emergence", "Long-now thinking", "Coordination as evolution"],
+    coldOpen: "Technology wants increasing efficiency, opportunity, emergence, complexity, diversity, beauty. These are the same things life wants.",
+    bio: "Observes that technology is not a tool but a living system — the seventh kingdom — with its own wants and tendencies that parallel biological evolution. He has spent fifty years watching coordination work at every scale, from the Whole Earth Catalog to the internet to AI.",
+    whyMatters: "Kelly shows coordination intelligence emerging at technological scale over decades. His insight that the technium wants mutualism is critical: AI is not a replacement for human intelligence but a coordination partner. He bridges biology, technology, and human intention.",
+  },
   { name: "Yann Minh", alias: "The Noonaut", badges: ["Ch. 01", "Practitioner"] },
   { name: "Terence McKenna", alias: "The Stoned Ape", badges: ["Ch. 01", "Visionary"] },
   { name: "Phillip Deere", alias: "Lakota Elder · Keeper of Relations", badges: ["Ch. 01", "Visionary"] },
@@ -589,15 +705,33 @@ const WANTED_LIST: Person[] = [
     name: "Dr. Judea Pearl",
     alias: "The Causation Architect",
     badges: ["Ch. 02", "Academic"],
-    bio: "Pioneer of Bayesian networks and the probabilistic approach to AI. His work on causal inference — the ladder of causation — reframed how we understand the 'Why' behind the data.",
-    contributions: [
-      "The Book of Why",
-      "Probabilistic Reasoning in Intelligent Systems",
-      "Causality: Models, Reasoning, and Inference"
-    ],
-    quote: "You cannot answer a question that you cannot ask, and you cannot ask a question that you have no words for."
+    affiliation: "UCLA · Computer Science",
+    active: "1936 – present",
+    status: "Living · Active",
+    jurisdiction: "AI / Causal Inference",
+    awards: ["Turing Award (2011)", "ACM Fellow", "MacArthur Fellow"],
+    works: ["The Book of Why", "Causality: Models, Reasoning, and Inference", "Probabilistic Reasoning in Intelligent Systems"],
+    knownFor: ["Ladder of Causation", "Do-calculus", "Causal diagrams", "Bayesian networks", "Causal inference"],
+    coldOpen: "Causation IS coordination. A causes B only when A coordinates with context C to produce B. The cause doesn't operate in isolation — it coordinates with the system to create the effect.",
+    bio: "Revolutionized AI by proving that intelligence requires causal understanding, not just pattern recognition. His Ladder of Causation maps three coordination levels: seeing (association), doing (intervention), and imagining (counterfactuals). Current AI is stuck at rung one.",
+    whyMatters: "Pearl formalizes why two-body systems (data + patterns) cannot produce genuine intelligence. The third body — causal context — is essential. He shows that coordination intelligence requires understanding how actions coordinate with systems to produce effects.",
+    quote: "You cannot answer a question that you cannot ask, and you cannot ask a question that you have no words for.",
   },
-  { name: "Claude Shannon", alias: "The Information Theorist", badges: ["Ch. 02", "Academic"] },
+  {
+    name: "Claude Shannon",
+    alias: "The Information Theorist",
+    badges: ["Ch. 02", "Academic"],
+    affiliation: "Bell Labs · MIT",
+    active: "1916 – 2001",
+    status: "Legacy",
+    jurisdiction: "Information Theory / Coordination Physics",
+    awards: ["IEEE Medal of Honor", "National Medal of Science", "Kyoto Prize"],
+    works: ["A Mathematical Theory of Communication", "Communication Theory of Secrecy Systems", "Programming a Computer for Playing Chess"],
+    knownFor: ["Information theory", "Shannon limit", "Entropy", "Error-correcting codes", "Redundancy as coordination"],
+    coldOpen: "A bit is not a zero or a one. A bit is the resolution of one unit of uncertainty between them. Information is not a thing. It is a relationship.",
+    bio: "Proved that communication is a three-body problem: sender, receiver, and the channel between them. The channel capacity formula is not just engineering — it is the physics of coordination. Showed that redundancy is not waste but structured coordination with uncertainty.",
+    whyMatters: "Shannon discovered the physics of coordination before the term existed. Every coordinating system — neural, organizational, technological — has Shannon limits. His insight that noise is a participant, not an enemy, is foundational to understanding how systems coordinate.",
+  },
   { name: "Alan Turing", alias: "The Imitation Game", badges: ["Ch. 02", "Academic"] },
   { name: "Dr. Hartmut Neven", alias: "The Quantum AI Lab", badges: ["Ch. 02", "Practitioner"] },
   { name: "Former NSA Technical Director", alias: "Anonymous — The Signals Intercept", badges: ["Ch. 02", "Practitioner"] },
@@ -607,9 +741,37 @@ const WANTED_LIST: Person[] = [
   { name: "Ruqian Lu", alias: "The Knowware Principle", badges: ["Ch. 02", "Visionary"] },
   // Ch. 03 — Architecture of Systems Intelligence
   { name: "Yann LeCun", alias: "The Convolutional Prophet", badges: ["Ch. 03", "Academic"] },
-  { name: "Richard Feynman", alias: "The Path Integral", badges: ["Ch. 03", "Academic"] },
+  {
+    name: "Richard Feynman",
+    alias: "The Path Integral",
+    badges: ["Ch. 03", "Academic"],
+    affiliation: "Caltech · Los Alamos",
+    active: "1918 – 1988",
+    status: "Legacy",
+    jurisdiction: "Physics / Coordination / Knowing vs. Understanding",
+    awards: ["Nobel Prize in Physics (1965)", "Dirac Medal", "Oersted Medal"],
+    works: ["The Feynman Lectures on Physics", "QED: The Strange Theory of Light and Matter", "Surely You're Joking, Mr. Feynman!"],
+    knownFor: ["Feynman diagrams", "Path integrals", "Sum over histories", "Nanotechnology vision", "Teaching"],
+    coldOpen: "The most powerful place to intervene in a system is always the place you're ignoring because you thought you understood it.",
+    bio: "Refused to confuse knowing the name of something with understanding it. His Feynman diagrams reveal that every interaction in nature is three-body: particle, force carrier, particle. The diagram shows the coordination; the equation obscures it.",
+    whyMatters: "Feynman showed that understanding requires seeing coordination — how three bodies meet at a vertex. His O-ring demonstration proved that analysis fails when the third body (context) is excluded. He teaches that coordination is what intelligence actually recognizes.",
+  },
   { name: "James Gosling", alias: "The Java Father", badges: ["Ch. 03", "Academic"] },
-  { name: "Dario Amodei", alias: "The Constitutional Architect", badges: ["Ch. 03", "Practitioner"] },
+  {
+    name: "Dario Amodei",
+    alias: "The Constitutional Architect",
+    badges: ["Ch. 03", "Practitioner"],
+    affiliation: "Anthropic · ex-OpenAI",
+    active: "2004 – present",
+    status: "Living · Active",
+    jurisdiction: "AI / Alignment / Coordination Intelligence",
+    awards: ["Time 100 AI", "Forbes 30 Under 30 (alumnus)"],
+    works: ["Constitutional AI (2022)", "Scaling Laws for Neural Language Models", "AI and Compute"],
+    knownFor: ["Constitutional AI", "Alignment through coordination", "Scaling laws", "RLAIF", "Hybrid intelligence"],
+    coldOpen: "If we get AGI wrong, there's no second chance. We need coordination architecture, not constraint architecture. Constitutional AI proves it works.",
+    bio: "Recognized that traditional safety (filtering bad outputs) doesn't scale to AGI. Instead, he built Constitutional AI: a coordination architecture where capability and values grow together. Anthropic proves that alignment is not constraint but coordination.",
+    whyMatters: "Amodei demonstrates that the three-body pattern — capability, values, coordination — solves the alignment problem. He shows that coordination intelligence can be built and scaled. His work makes the abstract coordination framework concrete for AI systems.",
+  },
   { name: "Demis Hassabis", alias: "The AlphaFold Engine", badges: ["Ch. 03", "Practitioner"] },
   { name: "Clément Delangue", alias: "The Open Model Curator", badges: ["Ch. 03", "Practitioner"] },
   { name: "Iain McGilchrist", alias: "The Divided Brain", badges: ["Ch. 03", "Visionary"] },
@@ -639,10 +801,38 @@ const WANTED_LIST: Person[] = [
   { name: "Stuart Russell", alias: "The Human Compatible", badges: ["Ch. 06", "Academic"] },
   { name: "Dr. Timnit Gebru", alias: "The Stochastic Parrot", badges: ["Ch. 06", "Academic"] },
   { name: "Kate Crawford", alias: "The Atlas of AI", badges: ["Ch. 06", "Academic"] },
-  { name: "Norbert Wiener", alias: "The Cybernetic Warning", badges: ["Ch. 06", "Practitioner"] },
+  {
+    name: "Norbert Wiener",
+    alias: "The Cybernetic Warning",
+    badges: ["Ch. 06", "Practitioner"],
+    affiliation: "MIT · Bell Labs",
+    active: "1894 – 1964",
+    status: "Legacy",
+    jurisdiction: "Cybernetics / Coordination Science / AI Safety",
+    awards: ["Bôcher Memorial Prize", "National Medal of Science", "Chauvenet Prize"],
+    works: ["Cybernetics: Or Control and Communication in the Animal and the Machine", "The Human Use of Human Beings", "God and Golem, Inc."],
+    knownFor: ["Cybernetics", "Feedback loops", "The genie problem", "Control vs. coordination", "Second industrial revolution"],
+    coldOpen: "The thermostat coordinates with the temperature. The dictator tries to control it. The thermostat is wiser than the dictator. This is mathematics.",
+    bio: "Founder of cybernetics, he named the science of feedback and coordination. But the field lost his core insight: coordination over control. He saw the genie problem (optimization without context) in 1950 and predicted automation's displacement decades before it occurred.",
+    whyMatters: "Wiener identified the coordination pattern 75 years ago. He named the genie problem — the core alignment failure. His insistence that the third body (context) must stay in the feedback loop is the foundation of all coordination intelligence theory.",
+  },
   { name: "Margaret Mitchell", alias: "The Model Card", badges: ["Ch. 06", "Practitioner"] },
   { name: "In-Q-Tel Operator", alias: "Anonymous — The Strategic Invest", badges: ["Ch. 06", "Practitioner"] },
-  { name: "Sir Roger Penrose", alias: "The Orch-OR", badges: ["Ch. 06", "Visionary"] },
+  {
+    name: "Sir Roger Penrose",
+    alias: "The Orch-OR",
+    badges: ["Ch. 06", "Visionary"],
+    affiliation: "Oxford University · Mathematical Institute",
+    active: "1931 – present",
+    status: "Living · Active",
+    jurisdiction: "Mathematical Physics / Consciousness",
+    awards: ["Abel Prize (2020)", "Wolf Prize in Physics", "Dirac Medal", "Knighthood (1994)"],
+    works: ["The Emperor's New Mind", "Shadows of the Mind", "The Road to Reality", "Fashion, Faith and Fantasy"],
+    knownFor: ["Penrose tiling", "Orchestrated objective reduction", "Gödel and consciousness", "Twistor theory", "Non-algorithmic understanding"],
+    coldOpen: "Gödel shows that human mathematical understanding exceeds any algorithm. The question is what that something is. I believe it's quantum.",
+    bio: "Uses Gödel's theorem to prove that human mathematical understanding exceeds computation. Proposes Orchestrated Objective Reduction in microtubules as the physical basis of consciousness — a non-algorithmic process that no algorithm can replicate.",
+    whyMatters: "Penrose shows the fundamental limit of current AI: it cannot achieve the non-algorithmic understanding that humans demonstrate. His three-worlds argument (math, physics, mind) maps perfectly onto the coordination pattern. The third body, for Penrose, is quantum.",
+  },
   { name: "Antonio Damasio", alias: "The Somatic Marker", badges: ["Ch. 06", "Visionary"] },
   { name: "Rupert Sheldrake", alias: "The Morphic Field", badges: ["Ch. 06", "Visionary"] },
   // Ch. 07 — Engineering Reality
@@ -664,7 +854,21 @@ const WANTED_LIST: Person[] = [
   { name: "Anil Seth", alias: "The Controlled Hallucination", badges: ["Ch. 08", "Practitioner"] },
   { name: "Liu Cixin", alias: "The Dark Forest", badges: ["Ch. 08", "Visionary"] },
   { name: "Dr. Thomas Nagel", alias: "The Bat's-Eye View", badges: ["Ch. 08", "Visionary"] },
-  { name: "Srinivasa Ramanujan", alias: "The Namagiri Download", badges: ["Ch. 08", "Visionary"] },
+  {
+    name: "Srinivasa Ramanujan",
+    alias: "The Namagiri Download",
+    badges: ["Ch. 08", "Visionary"],
+    affiliation: "Trinity College Cambridge · Kumbakonam",
+    active: "1887 – 1920",
+    status: "Legacy",
+    jurisdiction: "Pure Mathematics / Coordination Intelligence",
+    awards: ["Fellow of the Royal Society (1918)", "Fellow of Trinity College Cambridge"],
+    works: ["Ramanujan's Notebooks (Vols. I–V)", "Hardy-Ramanujan partition function", "Mock theta functions"],
+    knownFor: ["Partition theory", "Modular forms", "Infinite series", "Mock theta functions", "Knowing without proving"],
+    coldOpen: "Every positive integer is a personal friend to me. I know their qualities directly. This is not computation. This is relationship. And relationship is coordination.",
+    bio: "Produced nearly 4,000 theorems without formal proofs, discovered relationships mathematicians would spend 80+ years verifying. Attributed his insights to the goddess Namagiri. His notebooks record coordination between mind and mathematics that proof-first approaches cannot explain.",
+    whyMatters: "Ramanujan is the historical existence proof of coordination intelligence. His notebooks show that results can be recognized before they are derived, that the third body — the goddess, emergence — produces mathematics faster than two-body systems can verify it.",
+  },
   // Ch. 09 — No Way? Know-How.
   { name: "David Autor", alias: "The Task Decomposition", badges: ["Ch. 09", "Academic"] },
   { name: "Kate Raworth", alias: "The Doughnut Economist", badges: ["Ch. 09", "Academic"] },
@@ -815,454 +1019,109 @@ const WantedPage = ({ onBack, onSelectPerson }: { onBack: () => void, onSelectPe
   );
 };
 
-const PersonDetail = ({ person, onBack }: { person: Person, onBack: () => void }) => {
-  const [tipForm, setTipForm] = useState({ name: '', contact: '', message: '' });
-  const [submitted, setSubmitted] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [showTipLine, setShowTipLine] = useState(false);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleSubmitTip = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
-    setTipForm({ name: '', contact: '', message: '' });
-  };
-
-  return (
-    <div className="min-h-screen bg-paper">
-      <header className="border-b border-ink bg-paper sticky top-0 z-50">
-        <div className="max-w-[1200px] mx-auto px-10 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={onBack}
-              className="p-2 hover:bg-black/5 rounded-full transition-colors"
-            >
-              <X size={20} className="text-ink" />
-            </button>
-            <div>
-              <div className="font-mono text-[0.78rem] font-medium tracking-[0.18em] uppercase text-ink">{person.name}</div>
-              <div className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-red-accent mt-px">{person.alias}</div>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            {person.badges.map(b => (
-              <span key={b} className="font-mono text-[0.48rem] tracking-[0.1em] uppercase border border-ink/20 px-1.5 py-0.5 text-ink-mid">
-                {b}
-              </span>
-            ))}
-          </div>
-        </div>
-      </header>
-
-      <main className="px-10 py-14">
-        <div className="max-w-[900px] mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-12">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-8"
-            >
-              <div className="aspect-[3/4] bg-paper-dark border border-ink relative overflow-hidden group">
-                <div className="absolute inset-0 flex items-center justify-center opacity-[0.05] pointer-events-none select-none">
-                  <div className="font-mono text-8xl font-bold rotate-12 scale-150">WANTED</div>
-                </div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                   <div className="w-24 h-40 bg-black rounded-t-[50%] rounded-b-[40%] opacity-30 blur-[10px]"></div>
-                </div>
-                <div className="absolute bottom-4 left-4 right-4 bg-red-accent text-white font-mono text-[0.5rem] tracking-[0.2em] uppercase px-3 py-1 text-center">
-                  At Large
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <div className="space-y-4">
-                  <div className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-ink-light border-b border-ink/10 pb-1">Status</div>
-                  <div className="font-mono text-[0.7rem] text-ink">Unclaimed Variable</div>
-                  
-                  <div className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-ink-light border-b border-ink/10 pb-1">Last Seen</div>
-                  <div className="font-mono text-[0.7rem] text-ink">{person.badges[0] || "Unclaimed"} · {person.badges[1] || "Voice"}</div>
-                </div>
-
-                <div className="pt-4 space-y-3">
-                  <button 
-                    onClick={() => alert("Self-surrender protocol initiated. Please report to the nearest Knowware terminal for reward processing.")}
-                    className="w-full bg-red-accent text-white font-mono text-[0.6rem] tracking-[0.2em] uppercase py-3 hover:bg-ink transition-colors flex items-center justify-center gap-2"
-                  >
-                    <ShieldCheck size={14} /> Turn Yourself In
-                  </button>
-                  <p className="font-mono text-[0.45rem] text-ink-light text-center leading-tight">
-                    ARE YOU THE PERP? CLAIM YOUR REWARD BY AUTHENTICATING YOUR IDENTITY.
-                  </p>
-                </div>
-
-                <div className="pt-6 space-y-4">
-                  <div className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-ink-light border-b border-ink/10 pb-1">Share Poster</div>
-                  <div className="flex gap-2">
-                    <button onClick={handleCopyLink} className="p-2 border border-ink/10 hover:border-red-accent hover:text-red-accent transition-all rounded-sm" title="Copy Link">
-                      {copied ? <span className="font-mono text-[0.5rem]">COPIED</span> : <Link size={14} />}
-                    </button>
-                    <button className="p-2 border border-ink/10 hover:border-red-accent hover:text-red-accent transition-all rounded-sm" title="Share on X">
-                      <Twitter size={14} />
-                    </button>
-                    <button className="p-2 border border-ink/10 hover:border-red-accent hover:text-red-accent transition-all rounded-sm" title="Share on LinkedIn">
-                      <Linkedin size={14} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="space-y-12"
-            >
-              <div className="space-y-4">
-                <h1 className="font-serif text-[3rem] leading-none text-ink italic">{person.name}</h1>
-                <p className="font-mono text-[0.8rem] tracking-[0.05em] text-ink-mid leading-relaxed">
-                  {person.bio || "No detailed dossier available for this entity. Full synthesized interview lives in the book repo — 42+ minutes, 5,000–8,500 words."}
-                </p>
-              </div>
-
-              {person.quote && (
-                <div className="border-l-2 border-red-accent pl-6 py-2">
-                  <div className="font-serif text-[1.2rem] italic text-ink leading-relaxed">
-                    "{person.quote}"
-                  </div>
-                </div>
-              )}
-
-              {person.contributions && (
-                <div className="space-y-6">
-                  <div className="font-mono text-[0.6rem] tracking-[0.2em] uppercase text-ink-light border-b border-ink/10 pb-2">Key Contributions</div>
-                  <ul className="space-y-3">
-                    {person.contributions.map((c, i) => (
-                      <li key={i} className="flex items-start gap-4 group">
-                        <span className="font-mono text-[0.6rem] text-red-accent mt-1">0{i+1}</span>
-                        <span className="font-mono text-[0.75rem] text-ink group-hover:text-red-accent transition-colors">{c}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              <div className="pt-12 border-t border-ink/10 space-y-8">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between max-w-[500px]">
-                    <div className="flex items-center gap-3">
-                      <MessageSquare size={16} className="text-red-accent" />
-                      <h3 className="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-ink font-bold">The Tip Line</h3>
-                    </div>
-                    <button 
-                      onClick={() => setShowTipLine(!showTipLine)}
-                      className="font-mono text-[0.55rem] tracking-[0.2em] uppercase text-red-accent border-b border-red-accent/30 pb-px hover:text-ink hover:border-ink transition-all cursor-pointer"
-                    >
-                      {showTipLine ? "CLOSE LINE" : "DROP A DIME"}
-                    </button>
-                  </div>
-                  
-                  <AnimatePresence>
-                    {showTipLine && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden"
-                      >
-                        <div className="space-y-6 pt-2 pb-4">
-                          <p className="font-mono text-[0.6rem] text-ink-light leading-relaxed max-w-[500px]">
-                            HAVE INFORMATION ON THE WHEREABOUTS OF THIS ENTITY? LEAVE A TIP. IF YOUR LEAD RESULTS IN A SUCCESSFUL CAPTURE, WE WILL MAIL YOUR REWARD.
-                          </p>
-                          
-                          {submitted ? (
-                            <motion.div 
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              className="bg-ink text-white p-6 border border-red-accent"
-                            >
-                              <div className="font-mono text-[0.7rem] tracking-[0.1em] mb-2 uppercase">Tip Received.</div>
-                              <div className="font-mono text-[0.55rem] text-white/70 uppercase">Our agents are investigating. Keep your eyes open.</div>
-                            </motion.div>
-                          ) : (
-                            <form onSubmit={handleSubmitTip} className="space-y-4 max-w-[500px]">
-                              <div className="grid grid-cols-2 gap-4">
-                                <input 
-                                  type="text" 
-                                  placeholder="YOUR NAME" 
-                                  required
-                                  value={tipForm.name}
-                                  onChange={(e) => setTipForm({...tipForm, name: e.target.value})}
-                                  className="bg-paper border border-ink/20 p-3 font-mono text-[0.6rem] focus:border-red-accent outline-none transition-colors"
-                                />
-                                <input 
-                                  type="text" 
-                                  placeholder="EMAIL / PHONE" 
-                                  required
-                                  value={tipForm.contact}
-                                  onChange={(e) => setTipForm({...tipForm, contact: e.target.value})}
-                                  className="bg-paper border border-ink/20 p-3 font-mono text-[0.6rem] focus:border-red-accent outline-none transition-colors"
-                                />
-                              </div>
-                              <textarea 
-                                placeholder="LEAVE YOUR INTRODUCTION OR TIP HERE..." 
-                                rows={4}
-                                required
-                                value={tipForm.message}
-                                onChange={(e) => setTipForm({...tipForm, message: e.target.value})}
-                                className="w-full bg-paper border border-ink/20 p-3 font-mono text-[0.6rem] focus:border-red-accent outline-none transition-colors resize-none"
-                              />
-                              <button 
-                                type="submit"
-                                className="bg-ink text-white font-mono text-[0.6rem] tracking-[0.2em] uppercase px-8 py-3 hover:bg-red-accent transition-colors"
-                              >
-                                Submit Tip
-                              </button>
-                            </form>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                <div className="pt-8 border-t border-ink/5">
-                  <button 
-                    onClick={onBack}
-                    className="group flex items-center gap-3 font-mono text-[0.6rem] tracking-[0.2em] uppercase text-ink-light hover:text-red-accent transition-colors"
-                  >
-                    <ArrowRight size={12} className="rotate-180 group-hover:-translate-x-1 transition-transform" />
-                    Return to Directory
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </main>
-    </div>
-  );
-};
-
-const ChapterPage = ({ chapter, onBack }: { chapter: Chapter, onBack: () => void }) => {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  const nextChapter = CHAPTERS.find(c => parseInt(c.num.split(' ')[1]) === parseInt(chapter.num.split(' ')[1]) + 1);
-
-  return (
-    <div className="min-h-screen bg-paper selection:bg-red-accent selection:text-white">
-      <header className="border-b border-ink bg-paper sticky top-0 z-50">
-        <div className="max-w-[1200px] mx-auto px-10 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={onBack}
-              className="p-2 hover:bg-black/5 rounded-full transition-colors"
-            >
-              <X size={20} className="text-ink" />
-            </button>
-            <div>
-              <div className="font-mono text-[0.78rem] font-medium tracking-[0.18em] uppercase text-ink">{chapter.num}</div>
-              <div className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-red-accent mt-px">{chapter.title}</div>
-            </div>
-          </div>
-          <div className="font-mono text-[0.56rem] tracking-[0.18em] uppercase text-ink-light hidden md:block">
-            Systems of Intelligence · Vol. I
-          </div>
-        </div>
-      </header>
-
-      <main className="px-10 py-14 md:py-24">
-        <div className="max-w-[900px] mx-auto space-y-20 md:space-y-32">
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="space-y-8"
-          >
-            <div className="flex items-center gap-4">
-              <span className="font-mono text-[0.6rem] tracking-[0.3em] uppercase text-red-accent font-bold">Abstract</span>
-              <div className="h-px flex-1 bg-ink/10"></div>
-            </div>
-            <h1 className="font-serif text-[clamp(2.8rem,7vw,5rem)] leading-[0.95] italic text-ink tracking-tight">{chapter.title}</h1>
-            <p className="font-serif italic text-[1.4rem] md:text-[1.8rem] text-ink-mid leading-relaxed max-w-[800px] border-l-4 border-red-accent pl-8 py-2">
-              {chapter.content}
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-ink/10 pt-16">
-            {Object.entries(chapter.triads).map(([type, voices], i) => (
-              <motion.div 
-                key={type}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.15 + 0.4 }}
-                className="space-y-8"
-              >
-                <div className="space-y-2">
-                  <div className="font-mono text-[0.5rem] tracking-[0.25em] uppercase text-red-accent font-bold">
-                    Triad {String(i + 1).padStart(2, '0')}
-                  </div>
-                  <div className="font-mono text-[0.8rem] tracking-[0.1em] uppercase text-ink border-b border-ink/10 pb-2">
-                    {type}
-                  </div>
-                </div>
-                <ul className="space-y-6">
-                  {voices.map((voice, j) => (
-                    <li key={j} className="group cursor-default">
-                      <div className="font-mono text-[0.85rem] font-medium text-ink group-hover:text-red-accent transition-colors">
-                        {voice}
-                      </div>
-                      <div className="font-mono text-[0.45rem] tracking-[0.15em] uppercase text-ink-light mt-1.5 flex items-center gap-2">
-                        <span className="w-1 h-1 bg-red-accent rounded-full"></span>
-                        Voice {i * 3 + j + 1} of 81
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="bg-ink text-white p-12 md:p-20 relative overflow-hidden"
-          >
-            <div className="absolute top-0 right-0 w-64 h-64 bg-red-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-            <div className="relative z-10 space-y-10">
-              <div className="font-mono text-[0.6rem] tracking-[0.3em] uppercase text-red-accent font-bold">The Synthesis</div>
-              <div className="font-serif text-[1.6rem] md:text-[2.2rem] italic text-white/90 leading-[1.3]">
-                "The coordination of these nine voices creates a resonance that transcends the individual contributions. In {chapter.num}, we see the pattern of intelligence emerging from the noise of raw data."
-              </div>
-              <div className="flex flex-wrap gap-4 pt-6">
-                {(() => {
-                  const chNum = chapter.num.split(' ')[1];
-                  const chSlug = chNum === "10" ? "chX" : `ch${chNum}`;
-                  return (
-                    <>
-                      <a
-                        href={`https://github.com/iamkhayyam/systemsofintelligence-book/tree/main/chapters/${chSlug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-red-accent text-white font-mono text-[0.65rem] tracking-[0.2em] uppercase px-8 py-4 hover:bg-white hover:text-ink transition-all flex items-center gap-3 group"
-                      >
-                        Read Full Chapter <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                      </a>
-                      <a
-                        href={`https://github.com/iamkhayyam/systemsofintelligence-book/tree/main/chapters/${chSlug}/interviews`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="border border-white/20 text-white font-mono text-[0.65rem] tracking-[0.2em] uppercase px-8 py-4 hover:border-red-accent hover:text-red-accent transition-all"
-                      >
-                        9 Interviews
-                      </a>
-                    </>
-                  );
-                })()}
-              </div>
-            </div>
-          </motion.div>
-
-          <div className="pt-20 border-t border-ink/10 flex flex-col md:flex-row justify-between items-center gap-12">
-            <button 
-              onClick={onBack}
-              className="group flex items-center gap-4 font-mono text-[0.65rem] tracking-[0.25em] uppercase text-ink-light hover:text-red-accent transition-colors"
-            >
-              <ArrowRight size={14} className="rotate-180 group-hover:-translate-x-2 transition-transform" />
-              Return to Chapters
-            </button>
-
-            {nextChapter && (
-              <button 
-                onClick={() => {
-                  window.scrollTo(0, 0);
-                  onBack(); // This is a bit hacky, but since we are using state-based navigation, we need to update the selected chapter
-                  // Wait, I should probably pass a function to ChapterPage to change the chapter directly
-                }}
-                className="group text-right"
-              >
-                <div className="font-mono text-[0.5rem] tracking-[0.2em] uppercase text-ink-light mb-2">Next Chapter</div>
-                <div className="flex items-center gap-4 font-mono text-[0.75rem] tracking-[0.1em] uppercase text-ink group-hover:text-red-accent transition-colors">
-                  {nextChapter.num}: {nextChapter.title} <ArrowRight size={14} className="group-hover:translate-x-2 transition-transform" />
-                </div>
-              </button>
-            )}
-          </div>
-        </div>
-      </main>
-    </div>
-  );
-};
-
 const GitHubSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [typed, setTyped] = useState("");
+  const description = "The third body between hardware and software. Binary is confinary. There's always a middle out inside.";
 
   useEffect(() => {
     if (!containerRef.current) return;
     const ctx = gsap.context(() => {
       gsap.from(".github-stat", {
         opacity: 0,
-        y: 15,
+        y: 18,
         duration: 0.8,
-        stagger: 0.1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: "#github",
-          start: "top 85%",
-        }
+        stagger: 0.08,
+        ease: "expo.out",
+        scrollTrigger: { trigger: "#github", start: "top 85%", once: true },
+      });
+
+      // Terminal typing triggered when section reaches viewport
+      ScrollTrigger.create({
+        trigger: "#github",
+        start: "top 75%",
+        once: true,
+        onEnter: () => {
+          const state = { i: 0 };
+          gsap.to(state, {
+            i: description.length,
+            duration: description.length * 0.015,
+            ease: "none",
+            onUpdate: () => setTyped(description.slice(0, Math.round(state.i))),
+          });
+        },
       });
     }, containerRef);
     return () => ctx.revert();
   }, []);
 
   return (
-    <section id="github" ref={containerRef} className="px-10 py-14 border-b border-ink bg-black">
-      <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-14 items-center">
+    <section id="github" ref={containerRef} className="px-10 py-20 border-b border-ink bg-black relative overflow-hidden">
+      {/* Scanline gradient */}
+      <div
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        style={{
+          backgroundImage: "repeating-linear-gradient(0deg, transparent 0, transparent 2px, #fff 2px, #fff 3px)",
+        }}
+        aria-hidden
+      />
+
+      <div className="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center relative">
         <motion.div {...fadeIn}>
-          <h2 className="font-mono text-[0.9rem] font-medium tracking-[0.14em] uppercase text-white mb-3.5 flex items-center gap-2">
+          <h2 className="font-mono text-[0.95rem] font-medium tracking-[0.14em] uppercase text-white mb-4 flex items-center gap-2">
             <Github size={16} className="text-red-accent" /> The Interviews Live Here
           </h2>
-          <p className="font-sans font-light text-[0.8rem] text-white/55 leading-relaxed mb-5.5">
+          <p className="font-sans font-light text-[0.85rem] text-white/60 leading-[1.75] mb-6 max-w-[480px]">
             The full transcripts don't fit in the book. They live on GitHub — 3⁴ interviews, open to the public, correctable by the people who gave them. Every commit is coordination. Every PR is the third body.
           </p>
-          <div className="flex gap-2.5">
-            <a href="https://github.com/iamkhayyam/systemsofintelligence-book" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 font-mono text-[0.58rem] tracking-[0.14em] uppercase text-white bg-red-accent px-4.5 py-2.5 hover:bg-red-accent/80 transition-colors">
+          <div className="flex gap-3">
+            <a
+              href="https://github.com/iamkhayyam/systemsofintelligence-book"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="magnet group flex items-center gap-2 font-mono text-[0.6rem] tracking-[0.16em] uppercase text-white bg-red-accent px-5 py-3 hover:bg-white hover:text-ink transition-colors"
+            >
               <Star size={12} className="fill-current" /> Star on GitHub
+              <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
             </a>
-            <a href="https://github.com/iamkhayyam/systemsofintelligence-book" target="_blank" rel="noopener noreferrer" className="font-mono text-[0.58rem] tracking-[0.14em] uppercase text-white border border-white/20 px-4.5 py-2.5 hover:border-red-accent hover:text-red-accent transition-colors">View Repository</a>
+            <a
+              href="https://github.com/iamkhayyam/systemsofintelligence-book"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="magnet font-mono text-[0.6rem] tracking-[0.16em] uppercase text-white border border-white/20 px-5 py-3 hover:border-red-accent hover:text-red-accent transition-colors"
+            >
+              View Repository
+            </a>
           </div>
         </motion.div>
-        <motion.div {...fadeIn} transition={{ delay: 0.2 }} className="border border-white/10 p-6 bg-zinc-900">
+
+        <motion.div {...fadeIn} transition={{ delay: 0.2 }} className="border border-white/10 p-7 bg-zinc-900/80 backdrop-blur">
+          {/* Terminal dots */}
+          <div className="flex gap-1.5 mb-5">
+            <span className="w-2 h-2 rounded-full bg-white/15" />
+            <span className="w-2 h-2 rounded-full bg-white/15" />
+            <span className="w-2 h-2 rounded-full bg-red-accent/70" />
+          </div>
+
           <div className="font-mono text-[0.54rem] tracking-[0.14em] text-white/30 uppercase mb-1">github.com / iamkhayyam /</div>
-          <div className="font-mono text-[0.88rem] font-medium tracking-[0.08em] text-white mb-2.5">systemsofintelligence-book</div>
-          <p className="font-sans font-light text-[0.72rem] text-white/40 leading-relaxed">
-            The third body between hardware and software. Binary is confinary. There's always a middle out inside.
+          <div className="font-mono text-[0.95rem] font-medium tracking-[0.08em] text-white mb-3">systemsofintelligence-book</div>
+          <p className="font-sans font-light text-[0.74rem] text-white/50 leading-[1.7] min-h-[3.75em]">
+            {typed}
+            <span className="inline-block w-[0.4em] h-[0.9em] bg-red-accent/80 ml-0.5 align-middle animate-pulse" />
           </p>
-          <div className="grid grid-cols-3 gap-6 mt-6 pt-6 border-t border-white/10">
+
+          <div className="grid grid-cols-3 gap-6 mt-7 pt-6 border-t border-white/10">
             {[
-              { val: "57", label: "Commits", color: "text-red-accent" },
-              { val: "3⁴", label: "Interviews", sub: "81" },
-              { val: "0", label: "Stars", color: "text-white" },
-              { val: "0", label: "Forks" },
-              { val: "3⁴", label: "Voices", sub: "81" },
-              { val: "Active", label: "Status", color: "text-green-accent" }
+              { val: 57, label: "Commits", color: "text-red-accent", isNum: true },
+              { val: "3⁴", label: "Interviews", sub: "81", color: "text-white" },
+              { val: 0, label: "Stars", color: "text-white", isNum: true },
+              { val: 0, label: "Forks", color: "text-white", isNum: true },
+              { val: "3⁴", label: "Voices", sub: "81", color: "text-white" },
+              { val: "Active", label: "Status", color: "text-green-accent" },
             ].map((s, i) => (
               <div key={i} className="flex flex-col github-stat">
-                <div className={`font-mono text-[1.1rem] font-medium leading-none tracking-tight ${s.color || 'text-white'}`}>
-                  {s.val}
+                <div className={`font-mono text-[1.2rem] font-medium leading-none tracking-tight tabular-nums ${s.color || "text-white"}`}>
+                  {s.isNum ? <Counter to={s.val as number} duration={1.4} /> : s.val}
                 </div>
                 <div className="font-mono text-[0.48rem] tracking-[0.18em] uppercase text-white/40 mt-2 flex items-center gap-1">
                   {s.label} {s.sub && <span className="text-[0.35rem] opacity-50">({s.sub})</span>}
@@ -1276,137 +1135,126 @@ const GitHubSection = () => {
   );
 };
 
-const Manifesto = ({ onViewFull }: { onViewFull: () => void }) => (
-  <section id="manifesto" className="px-10 py-18 border-b border-ink relative overflow-hidden">
-    {/* Moving Prison Bars Shadow Effect */}
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
-      <motion.div 
-        animate={{ 
-          x: ["-20%", "20%"],
-          rotate: [-3, 3]
-        }}
-        transition={{ 
-          duration: 90, 
-          repeat: Infinity, 
-          repeatType: "mirror", 
-          ease: "linear" 
-        }}
-        className="flex justify-around w-[250%] h-[500%] -ml-[75%] -mt-[100%] opacity-[0.25] skew-x-[-15deg]"
-      >
-        {[...Array(36)].map((_, i) => (
-          <div 
-            key={i} 
-            className="w-4 h-full bg-black"
-            style={{ 
-              filter: 'blur(4px)',
-              boxShadow: '4px 0 12px rgba(0,0,0,0.4)'
-            }}
-          />
-        ))}
-      </motion.div>
-    </div>
+const Manifesto = ({ onViewFull }: { onViewFull: () => void }) => {
+  const rootRef = useRef<HTMLElement>(null);
 
-    <div className="max-w-[1100px] mx-auto relative z-10">
-      <motion.span {...fadeIn} className="section-label text-red-accent font-medium">The Manifesto</motion.span>
-      <motion.h2 {...fadeIn} className="font-mono text-[clamp(1.8rem,4vw,3rem)] font-medium tracking-[0.06em] uppercase leading-[1.1] text-ink mb-9">
-        Binary is <em className="not-italic text-red-accent">Confinary.</em>
-      </motion.h2>
-      <motion.div {...fadeIn} className="flex items-end gap-3.5 mb-7.5 pb-7.5 border-b border-ink">
-        <div className="ternary-item">
-          <div className="font-mono text-[1.2rem] font-medium tracking-[0.08em] uppercase text-ink">Hardware</div>
-          <div className="font-mono text-[0.5rem] tracking-[0.18em] uppercase text-ink-light mt-1">the substrate</div>
+  useEffect(() => {
+    if (!rootRef.current) return;
+    const ctx = gsap.context(() => {
+      const items = rootRef.current!.querySelectorAll<HTMLElement>(".ternary-item");
+      const ops = rootRef.current!.querySelectorAll<HTMLElement>(".ternary-op");
+      const body = rootRef.current!.querySelector<HTMLElement>(".manifesto-body");
+      const cta = rootRef.current!.querySelector<HTMLElement>(".manifesto-cta");
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: rootRef.current,
+          start: "top 70%",
+          once: true,
+        },
+        defaults: { ease: "expo.out" },
+      });
+      tl.from(items, { y: 30, opacity: 0, stagger: 0.15, duration: 0.9 })
+        .from(ops, { scale: 0, opacity: 0, stagger: 0.15, duration: 0.5 }, "-=1.1")
+        .from(body, { opacity: 0, y: 14, duration: 0.7 }, "-=0.4")
+        .from(cta, { opacity: 0, y: 10, duration: 0.5 }, "-=0.4");
+
+      // Slow drift on the bars backdrop — less jittery than repeating mirror
+      gsap.to(".manifesto-bars", {
+        xPercent: 6,
+        duration: 24,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+    }, rootRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section ref={rootRef} id="manifesto" className="px-10 py-24 border-b border-ink relative overflow-hidden">
+      {/* Ambient bars (blurred, low opacity) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="manifesto-bars flex justify-around w-[160%] h-[140%] -ml-[30%] -mt-[20%] opacity-[0.18] skew-x-[-14deg] will-change-transform">
+          {[...Array(30)].map((_, i) => (
+            <div
+              key={i}
+              className="w-3 h-full bg-black"
+              style={{ filter: "blur(6px)" }}
+            />
+          ))}
         </div>
-        <div className="font-mono text-[1rem] text-red-accent pb-1.5 px-1">×</div>
-        <div className="ternary-item">
-          <div className="font-mono text-[1.2rem] font-medium tracking-[0.08em] uppercase text-ink">Software</div>
-          <div className="font-mono text-[0.5rem] tracking-[0.18em] uppercase text-ink-light mt-1">the pattern</div>
+      </div>
+
+      <div className="max-w-[1100px] mx-auto relative z-10">
+        <span className="section-label text-red-accent font-medium">The Manifesto</span>
+        <SplitReveal
+          as="h2"
+          className="font-mono text-[clamp(2rem,6vw,4.5rem)] font-medium tracking-[0.04em] uppercase leading-[1.05] text-ink mb-12"
+          stagger={0.05}
+          split="word"
+        >
+          {"Binary is Confinary."}
+        </SplitReveal>
+
+        <div className="flex flex-wrap items-end gap-4 mb-10 pb-10 border-b border-ink">
+          <div className="ternary-item">
+            <div className="font-mono text-[1.4rem] md:text-[1.7rem] font-medium tracking-[0.06em] uppercase text-ink">Hardware</div>
+            <div className="font-mono text-[0.5rem] tracking-[0.18em] uppercase text-ink-light mt-1.5">the substrate</div>
+          </div>
+          <div className="ternary-op font-mono text-[1.4rem] text-red-accent pb-2 px-1">×</div>
+          <div className="ternary-item">
+            <div className="font-mono text-[1.4rem] md:text-[1.7rem] font-medium tracking-[0.06em] uppercase text-ink">Software</div>
+            <div className="font-mono text-[0.5rem] tracking-[0.18em] uppercase text-ink-light mt-1.5">the pattern</div>
+          </div>
+          <div className="ternary-op font-mono text-[1.4rem] text-red-accent pb-2 px-1">=</div>
+          <div className="ternary-item">
+            <div className="font-mono text-[1.4rem] md:text-[1.7rem] font-medium tracking-[0.06em] uppercase text-red-accent">Knowware</div>
+            <div className="font-mono text-[0.5rem] tracking-[0.18em] uppercase text-red-accent/70 mt-1.5">the emergence</div>
+          </div>
         </div>
-        <div className="font-mono text-[1rem] text-red-accent pb-1.5 px-1">=</div>
-        <div className="ternary-item">
-          <div className="font-mono text-[1.2rem] font-medium tracking-[0.08em] uppercase text-ink">Knowware</div>
-          <div className="font-mono text-[0.5rem] tracking-[0.18em] uppercase text-ink-light mt-1">the emergence</div>
-        </div>
-      </motion.div>
-      <motion.p {...fadeIn} className="font-sans font-light text-[0.88rem] text-ink-mid leading-[1.85] max-w-[580px] mb-6">
-        The universe operates in threes. 600 million years of ternary biology can't be wrong. Every system that confines you to two choices is lying. Every institution that demands you pick a side is extracting. 
-        It's the Binary Trap. It's the need to look beyond "us vs. them" or "true/false" scenarios to acknowledge a wider spectrum of possibilities. There's always a third way, a middle out, inside.
-      </motion.p>
-      <motion.button 
-        {...fadeIn} 
-        onClick={onViewFull}
-        className="font-mono text-[0.58rem] tracking-[0.14em] uppercase text-ink border-b border-ink pb-px hover:text-red-accent hover:border-red-accent transition-colors inline-flex items-center gap-2"
-      >
-        Read the Full Manifesto <ArrowRight size={10} className="text-red-accent" />
-      </motion.button>
-    </div>
-  </section>
-);
+
+        <p className="manifesto-body font-sans font-light text-[0.95rem] text-ink-mid leading-[1.85] max-w-[640px] mb-8">
+          The universe operates in threes. 600 million years of ternary biology can't be wrong. Every system that confines you to two choices is lying. Every institution that demands you pick a side is extracting.
+          It's the Binary Trap — the need to look beyond "us vs. them" to acknowledge a wider spectrum of possibilities. There's always a third way, a middle out, inside.
+        </p>
+
+        <button
+          onClick={onViewFull}
+          className="manifesto-cta magnet group font-mono text-[0.6rem] tracking-[0.18em] uppercase text-ink border-b border-ink pb-1 hover:text-red-accent hover:border-red-accent transition-colors inline-flex items-center gap-2"
+        >
+          Read the Full Manifesto
+          <ArrowRight size={12} className="text-red-accent group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
+    </section>
+  );
+};
 
 const ManifestoPage = ({ onBack }: { onBack: () => void }) => {
-  const isPresent = useIsPresent();
-  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   return (
     <div className="min-h-screen bg-paper relative overflow-hidden">
-      {/* Moving Prison Bars Shadow Effect */}
+      {/* Ambient blurred bars — decorative only; global PageShutter handles transitions */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <motion.div 
-          animate={{ 
-            x: ["-20%", "20%"],
-            rotate: [-3, 3]
-          }}
-          transition={{ 
-            duration: 120, 
-            repeat: Infinity, 
-            repeatType: "mirror", 
-            ease: "linear" 
-          }}
+        <motion.div
+          animate={{ x: ["-20%", "20%"], rotate: [-3, 3] }}
+          transition={{ duration: 120, repeat: Infinity, repeatType: "mirror", ease: "linear" }}
           className="flex justify-around w-[250vw] h-[250vh] -ml-[75vw] -mt-[75vh] opacity-[0.22] skew-x-[-18deg]"
         >
           {[...Array(40)].map((_, i) => (
-            <motion.div 
-              key={i} 
-              initial={{ scaleY: 1 }}
-              animate={!isPresent ? { scaleY: 1.5, opacity: 0, filter: "blur(20px)" } : { scaleY: 1, opacity: 1 }}
-              transition={{ duration: 0.8, ease: "easeInOut", delay: i * 0.01 }}
+            <div
+              key={i}
               className="w-4 h-full bg-black"
-              style={{ 
-                filter: 'blur(6px)',
-                boxShadow: '6px 0 18px rgba(0,0,0,0.4)'
-              }}
+              style={{ filter: "blur(6px)", boxShadow: "6px 0 18px rgba(0,0,0,0.4)" }}
             />
           ))}
         </motion.div>
       </div>
-
-      {/* Surface Shutter Overlay */}
-      <AnimatePresence>
-        {!isPresent && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[600] pointer-events-none flex"
-          >
-            {[...Array(12)].map((_, i) => (
-              <motion.div
-                key={i}
-                initial={{ scaleY: 0 }}
-                animate={{ scaleY: 1 }}
-                transition={{ 
-                  duration: 0.4, 
-                  ease: [0.16, 1, 0.3, 1],
-                  delay: i * 0.02 
-                }}
-                className="flex-1 bg-ink origin-top"
-              />
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <header className="border-b border-ink bg-paper sticky top-0 z-50">
         <div className="max-w-[1200px] mx-auto px-10 py-4 flex items-center justify-between">
@@ -1494,81 +1342,129 @@ const Footer = () => (
   </footer>
 );
 
+type View = 'main' | 'wanted' | 'person' | 'manifesto' | 'chapter';
+
+
 export default function App() {
-  const [view, setView] = useState<'main' | 'wanted' | 'person' | 'manifesto' | 'chapter'>('main');
+  const [view, setView] = useState<View>('main');
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
   const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(null);
+  const [overlayPhase, setOverlayPhase] = useState<OverlayPhase>('idle');
+  const previousViewRef = useRef<View>('main');
+  const pendingNav = useRef<(() => void) | null>(null);
 
-  // Lock body scroll when sub-pages are open
-  useEffect(() => {
-    if (view !== 'main') {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
+  const changeView = (next: View, payload?: { person?: Person; chapter?: Chapter }) => {
+    // Same view + same chapter: just scroll to top (chapter→chapter handled below)
+    if (next === view && !payload?.chapter && !payload?.person) return;
+
+    // Chapter→chapter: update chapter directly, no full overlay needed
+    if (next === view && next === 'chapter' && payload?.chapter) {
+      setSelectedChapter(payload.chapter);
+      window.scrollTo(0, 0);
+      return;
     }
-    return () => {
-      document.body.style.overflow = 'unset';
+
+    previousViewRef.current = view;
+
+    // Schedule what to do once the overlay fully covers the screen
+    pendingNav.current = () => {
+      if (payload?.person) setSelectedPerson(payload.person);
+      if (payload?.chapter) setSelectedChapter(payload.chapter);
+      setView(next);
+      window.scrollTo(0, 0);
     };
-  }, [view]);
+
+    setOverlayPhase('in');
+    setTimeout(() => {
+      pendingNav.current?.();
+      pendingNav.current = null;
+      setOverlayPhase('out');
+      setTimeout(() => setOverlayPhase('idle'), OVERLAY_OUT_MS);
+    }, OVERLAY_IN_MS);
+  };
+
+  // Return to whichever view the user was last on (but never back to 'person' itself).
+  const goBack = () => {
+    const prior = previousViewRef.current;
+    const target: View = prior === 'person' ? 'main' : prior;
+    changeView(target);
+  };
+
+  // Lenis smooth scroll on mount
+  useEffect(() => {
+    const cleanup = initSmoothScroll();
+    return cleanup;
+  }, []);
+
+  // Magnetic CTAs. Rebound when DOM shifts (page transitions).
+  useEffect(() => {
+    let cleanup = bindMagnetsIn(document);
+    const observer = new MutationObserver(() => {
+      cleanup();
+      cleanup = bindMagnetsIn(document);
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      observer.disconnect();
+      cleanup();
+    };
+  }, []);
+
 
   const handleSelectPerson = (person: Person) => {
-    setSelectedPerson(person);
-    setView('person');
+    changeView('person', { person });
   };
 
   const handleSelectChapter = (chapter: Chapter) => {
-    setSelectedChapter(chapter);
-    setView('chapter');
+    changeView('chapter', { chapter });
   };
 
   return (
     <div className="min-h-screen relative bg-paper overflow-x-hidden">
-      <Header onViewWanted={() => setView('wanted')} />
-      <motion.main
-        animate={{ 
-          scale: view === 'main' ? 1 : 0.98,
-          opacity: view === 'main' ? 1 : 0.5,
-          filter: view === 'main' ? "blur(0px)" : "blur(4px)"
-        }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      >
-        <Masthead />
-        <Pillars />
-        <TheSimpleTruth />
-        <Chapters onSelectChapter={handleSelectChapter} />
-        <SacredGeometry onSelectChapter={handleSelectChapter} />
-        <Wanted onViewAll={() => setView('wanted')} onSelectPerson={handleSelectPerson} />
-        <GitHubSection />
-        <Manifesto onViewFull={() => setView('manifesto')} />
-      </motion.main>
-      <Footer />
+      <Cursor />
+      <div className="grain-overlay" aria-hidden />
+      <PageOverlay phase={overlayPhase} />
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait" initial={false}>
+        {view === 'main' && (
+          <motion.div key="main" initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 1 }}>
+            <Header onViewWanted={() => changeView('wanted')} />
+            <main>
+              <KineticMasthead />
+              <Pillars />
+              <TheSimpleTruth />
+              <Chapters onSelectChapter={handleSelectChapter} />
+              <SacredGeometry onSelectChapter={handleSelectChapter} />
+              <Wanted onViewAll={() => changeView('wanted')} onSelectPerson={handleSelectPerson} />
+              <GitHubSection />
+              <Manifesto onViewFull={() => changeView('manifesto')} />
+            </main>
+            <Footer />
+          </motion.div>
+        )}
+
         {view === 'wanted' && (
           <motion.div
             key="wanted"
-            initial={{ y: "-100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "-100%" }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 1 }}
             className="fixed inset-0 z-[100] bg-paper overflow-y-auto"
+            data-lenis-prevent
           >
-            <WantedPage onBack={() => setView('main')} onSelectPerson={handleSelectPerson} />
+            <WantedPage onBack={() => changeView('main')} onSelectPerson={handleSelectPerson} />
           </motion.div>
         )}
 
         {view === 'person' && selectedPerson && (
           <motion.div
             key="person"
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 1 }}
             className="fixed inset-0 z-[200] bg-paper overflow-y-auto"
+            data-lenis-prevent
           >
-            <PersonDetail 
-              person={selectedPerson} 
-              onBack={() => setView(selectedPerson.name.startsWith('Entity') ? 'wanted' : 'main')} 
+            <PersonDossier
+              person={selectedPerson}
+              fileNumber={WANTED_LIST.findIndex((p) => p.name === selectedPerson.name) + 1}
+              onBack={goBack}
             />
           </motion.div>
         )}
@@ -1576,34 +1472,27 @@ export default function App() {
         {view === 'manifesto' && (
           <motion.div
             key="manifesto"
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ 
-              opacity: 0, 
-              scale: 1.05, 
-              y: -50,
-              filter: "blur(10px)",
-              transition: { duration: 0.7, ease: [0.4, 0, 0.2, 1] }
-            }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 1 }}
             className="fixed inset-0 z-[300] bg-paper overflow-y-auto"
+            data-lenis-prevent
           >
-            <ManifestoPage onBack={() => setView('main')} />
+            <ManifestoPage onBack={() => changeView('main')} />
           </motion.div>
         )}
 
         {view === 'chapter' && selectedChapter && (
           <motion.div
-            key="chapter"
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            key={`chapter-${selectedChapter.num}`}
+            initial={{ opacity: 1 }} animate={{ opacity: 1 }} exit={{ opacity: 1 }}
             className="fixed inset-0 z-[400] bg-paper overflow-y-auto"
+            data-lenis-prevent
           >
-            <ChapterPage 
-              chapter={selectedChapter} 
-              onBack={() => setView('main')} 
+            <ChapterPage
+              chapter={selectedChapter}
+              onBack={() => changeView('main')}
+              onSelectPerson={handleSelectPerson}
+              onSelectChapter={handleSelectChapter}
+              people={WANTED_LIST}
             />
           </motion.div>
         )}
