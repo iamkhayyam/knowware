@@ -19,6 +19,7 @@ const GRAVITY       = 0.010;   // very gentle pull to centroid
 const DRIFT_FORCE   = 0.18;    // per-node personal drift amplitude
 const DRIFT_SPEED   = 0.0028;  // how fast each node's drift direction rotates (~22s cycle)
 const MAX_VEL       = 18;      // velocity clamp — prevents frenetic runaway
+const SIDEBAR_W     = 288;     // w-72 sidebar width in px
 
 // Colors — detective's evidence board: all connections are red thread
 const PAPER         = "#ffffff";
@@ -83,7 +84,9 @@ export default function PrimePairsGraph({
   const driftPhaseRef = useRef(new Map<string, number>());  // per-node drift angle
   const driftSpeedRef = useRef(new Map<string, number>());  // per-node rotation speed
 
-  const resetRef = useRef<(() => void) | null>(null);
+  const resetRef       = useRef<(() => void) | null>(null);
+  const sidebarOpenRef = useRef(false);   // physics centroid uses this
+  const prevSelOpen    = useRef(false);   // tracks open→closed transition for pan
 
   const [sel, setSel]     = useState<Sel>(null);
   const [ready, setReady] = useState(false);
@@ -175,19 +178,9 @@ export default function PrimePairsGraph({
         { selector: "edge.active",       style: { "line-color": THREAD_ACTIVE, "width": 3, "opacity": 1 } },
         { selector: "edge.faded",        style: { "opacity": 0.05 } },
       ],
-      layout: {
-        name: "cose",
-        animate: true,
-        animationDuration: 900,
-        fit: true,
-        padding: 50,
-        nodeRepulsion: () => 10000,
-        idealEdgeLength: () => SPRING_LEN,
-        edgeElasticity: () => 80,
-        gravity: 60,
-        numIter: 1000,
-        randomize: false,
-      },
+      // No layout here — we run it manually after registering handlers so that
+      // layoutstop fires AFTER our listener is attached (not during construction).
+      layout: { name: "preset" },
     });
 
     // ── Physics loop ──────────────────────────────────────────────────────────
@@ -209,7 +202,9 @@ export default function PrimePairsGraph({
 
       const nodeArr = cyi.nodes().toArray() as NodeSingular[];
       const W = cyi.width(), H = cyi.height();
-      const cx = W / 2, cy_ = H / 2;
+      // Shift centroid target left when sidebar is open so nodes stay in the visible area
+      const cx = W / 2 - (sidebarOpenRef.current ? SIDEBAR_W / 2 : 0);
+      const cy_ = H / 2;
 
       const F = new Map<string, { fx: number; fy: number }>();
       nodeArr.forEach(n => F.set(n.id(), { fx: 0, fy: 0 }));
@@ -304,7 +299,16 @@ export default function PrimePairsGraph({
           cy.elements().not(node as any).not(edges).not(nbrs).addClass("faded");
           edges.addClass("active");
           nbrs.addClass("neighbor");
-          cy.animate({ center: { eles: node }, duration: 600 });
+
+          // Force Cytoscape to re-measure the container (dimensions may have settled
+          // after React's render), fit everything into view, then shift the viewport
+          // left so the graph lives in the visible area (sidebar takes the right side).
+          cy.resize();
+          cy.fit(undefined, 60);
+          cy.panBy({ x: -SIDEBAR_W / 2, y: 0 });
+
+          sidebarOpenRef.current = true;
+          prevSelOpen.current = true;
           setSel({
             type: "node",
             person: focusPerson,
@@ -390,6 +394,21 @@ export default function PrimePairsGraph({
     });
 
     cyRef.current = cy;
+
+    // Run layout NOW — after handlers are registered so layoutstop is caught
+    cy.layout({
+      name: "cose",
+      animate: false,
+      fit: true,
+      padding: 60,
+      nodeRepulsion: () => 8000,
+      idealEdgeLength: () => SPRING_LEN,
+      edgeElasticity: () => 80,
+      gravity: 50,
+      numIter: 400,
+      randomize: false,
+    }).run();
+
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       cy.destroy();
@@ -397,6 +416,22 @@ export default function PrimePairsGraph({
       setReady(false);
     };
   }, [primePairs]);
+
+  // Pan the viewport left/right as sidebar opens/closes so content stays centered
+  // in the visible (non-sidebar) area.
+  useEffect(() => {
+    const cy = cyRef.current;
+    if (!cy || !ready) return;
+    const isOpen = sel !== null;
+    if (isOpen === prevSelOpen.current) return; // content changed but sidebar state didn't
+    prevSelOpen.current = isOpen;
+    sidebarOpenRef.current = isOpen;
+    cy.animate({
+      panBy: { x: isOpen ? -SIDEBAR_W / 2 : SIDEBAR_W / 2, y: 0 },
+      duration: 260,
+      easing: "ease-out",
+    } as any);
+  }, [sel, ready]);
 
   // Helper: drill from node sidebar into a specific edge
   const drillEdge = (person: Person, other: Person, classifiers: string[]) => {
@@ -420,6 +455,7 @@ export default function PrimePairsGraph({
   const resetGraph = () => {
     cyRef.current?.elements().removeClass("selected neighbor faded active");
     setSel(null);
+    // sidebarOpenRef and prevSelOpen updated by the useEffect above
   };
 
   return (
