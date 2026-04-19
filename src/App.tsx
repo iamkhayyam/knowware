@@ -2032,7 +2032,8 @@ const GitHubSection = () => {
     ]).then(([repo, pulls]) => {
       setGhLive({
         stars: typeof repo.stargazers_count === "number" ? repo.stargazers_count : 0,
-        prs: Array.isArray(pulls) ? pulls.length : 0,
+        // Only count community PRs — exclude the repo owner's own submissions
+        prs: Array.isArray(pulls) ? pulls.filter((p: any) => p.user?.login !== "iamkhayyam").length : 0,
       });
     }).catch(() => {/* fail silently — defaults shown */});
   }, []);
@@ -2127,17 +2128,17 @@ const GitHubSection = () => {
             {[
               { val: ghLive?.stars ?? 0,  label: "Stars",       color: "text-red-accent", isNum: true },
               { val: PRIME_PAIRS_COUNT,   label: "Prime Pairs", color: "text-red-accent", isNum: true },
-              { val: "3⁴",               label: "Voices",      sub: "81", color: "text-white" },
-              { val: 57,                  label: "Commits",     color: "text-white", isNum: true },
-              { val: ghLive?.prs ?? 0,   label: "Open PRs",    sub: "turn yourself in", color: "text-white", isNum: true },
+              { val: "3⁴",               label: "Voices",         color: "text-white" },
+              { val: 57,                  label: "Commits",        color: "text-white", isNum: true },
+              { val: ghLive?.prs ?? 0,   label: "Push Requests",  color: "text-white", isNum: true },
               { val: "Active",            label: "Status",      color: "text-green-accent" },
             ].map((s, i) => (
               <div key={i} className="flex flex-col github-stat">
                 <div className={`font-mono text-[1.2rem] font-medium leading-none tracking-tight tabular-nums ${s.color || "text-white"}`}>
                   {s.isNum ? <Counter to={s.val as number} duration={1.4} /> : s.val}
                 </div>
-                <div className="font-mono text-[0.48rem] tracking-[0.18em] uppercase text-white/40 mt-2 flex items-center gap-1">
-                  {s.label} {s.sub && <span className="text-[0.35rem] opacity-50 normal-case">({s.sub})</span>}
+                <div className="font-mono text-[0.48rem] tracking-[0.18em] uppercase text-white/40 mt-2">
+                  {s.label}
                 </div>
               </div>
             ))}
